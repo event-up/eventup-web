@@ -1,10 +1,11 @@
-import NxWelcome from './nx-welcome';
+import { BrowserRouter } from 'react-router-dom';
+import { RootRoutes } from './routes';
 
 export function App() {
   return (
-    <div>
-      <NxWelcome title="scanner" />
-    </div>
+    <BrowserRouter>
+      <RootRoutes />
+    </BrowserRouter>
   );
 }
 
