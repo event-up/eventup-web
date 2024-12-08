@@ -1,23 +1,17 @@
 import { FunctionComponent } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { ScannerContainer } from '../../containers/Scanner/Scanner.container';
+import { ContactContainer } from '../../containers/Contact/Contact.container';
+import { ReferenceContainer } from '../../containers/Reference/Reference.container';
 
 interface CheckerPageRoutesProps {}
 
 const CheckerPageRoutes: FunctionComponent<CheckerPageRoutesProps> = () => {
   return (
     <Routes>
-      <Route
-        path="/scanner"
-        element={<div>This is the ScannerPage root route.</div>}
-      />
-      <Route
-        path="/contact"
-        element={<div>This is the contact root route.</div>}
-      />
-      <Route
-        path="/reference"
-        element={<div>This is the reference root route.</div>}
-      />
+      <Route path="/scanner" element={<ScannerContainer />} />
+      <Route path="/contact" element={<ContactContainer />} />
+      <Route path="/reference" element={<ReferenceContainer />} />
     </Routes>
   );
 };
