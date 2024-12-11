@@ -1,148 +1,200 @@
 import styles from './scanner.container.module.scss';
+import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
+  Alert,
+  Backdrop,
   Box,
-  Stack,
-  Typography,
-  IconButton,
   CircularProgress,
-  Button,
+  IconButton,
+  Snackbar,
+  Stack,
 } from '@mui/material';
-import React, { FC, useEffect, useState } from 'react';
-import { QrReader } from 'react-qr-reader';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import CloseIcon from '@mui/icons-material/Close';
-
-import { ref, onValue, runTransaction } from 'firebase/database';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db, fs } from '../../app/app';
-import InfoCard from '../../components/InfoCard/InfoCard';
+import { getAnalytics, logEvent } from 'firebase/analytics';
+import { useEffect, useRef, useState } from 'react';
+import { HighlightOff } from '@mui/icons-material';
+import { ref, runTransaction, set } from 'firebase/database';
+import { DocumentReference, doc, getDoc, setDoc } from 'firebase/firestore';
+import { checkCheckPoints } from '../../helpers/helpers';
+import { app, db, fs } from '../../app/app';
+import QrScanner from 'qr-scanner';
 import { Participant } from '../../components/commonTypes';
 
-export function ScannerContainer() {
-  const [count, setCount] = useState(0);
+export function ScannerContainer(checkPointCode: string) {
+  const analitics = getAnalytics(app);
+  const [response, setResponse] = useState<{
+    status: 'DONE' | 'ERROR' | 'WARN';
+    msg: string;
+  }>();
+
   const [qrText, setQRText] = useState<string | undefined>();
   const [scannedPerson, setScannedPerson] = useState<Participant | undefined>();
   const [isLoading, setisLoading] = useState(false);
-
   const [showScanner, setShowScanner] = useState(false);
+  const [camState, setCamState] = useState<'user' | 'environment'>();
+
+  const videoRef = useRef<HTMLVideoElement>();
+  const qrScanner = useRef<QrScanner>();
 
   useEffect(() => {
-    const countRef = ref(db, 'checkInCount');
-    console.log('init', { countRef });
-
-    const unsub = onValue(
-      countRef,
-      (snap) => {
-        const data = snap.val();
-        console.log('COunt update', { data });
-        setCount(data);
+    if (!videoRef.current) return;
+    const qr = new QrScanner(
+      videoRef.current,
+      (result: any) => {
+        console.log('result', result);
+        setQRText(result.data);
       },
-      (error) => {
-        console.log({ error });
+      {
+        highlightScanRegion: true,
+        highlightCodeOutline: true,
+
+        // maxScansPerSecond: 10,
       }
     );
 
-    return () => {
-      unsub();
-    };
+    console.log({ qr });
+
+    qr.start();
+
+    qrScanner.current = qr;
+  }, [videoRef, showScanner]);
+
+  useEffect(() => {
+    logEvent(analitics, 'page_view', { page_title: 'scanner' });
   }, []);
 
   useEffect(() => {
     if (!qrText) return;
+    logEvent(analitics, 'function', { place: 'useEffect', qrText });
 
     console.log('on data change:::', qrText);
     setisLoading(true);
-    parseQRText(qrText).then(
-      ({
-        data: {
-          beverages,
-          email,
-          emp_no,
-          food_preference,
-          id,
-          name,
-          nic,
-          vehicle_no,
-        },
-      }) => {
-        handleOnCheckIn({
-          drinks: beverages || [],
-          email,
-          empId: emp_no || '',
-          food: food_preference || '',
-          id: id || -1,
-          nic: nic || '',
-          vehicleNo: vehicle_no || '',
-          name,
-          isWinner: false,
-        })
-          .then((res) => {
-            setisLoading(false);
-          })
-          .catch((e) => {
-            console.log('error:', { e });
-            setisLoading(false);
-          });
-      }
-    );
+
+    handleOnCheckIn(qrText)
+      .then((res) => {
+        setisLoading(false);
+      })
+      .catch((e) => {
+        console.log('error:', { e });
+        setisLoading(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qrText]);
 
-  const parseQRText = async (text: string) => {
-    const url = encodeURIComponent(text);
-    const res = await fetch(
-      `https://party-qr-lolc-2.herokuapp.com/decrypt?enc_str=` + url,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
+  const handleOnCheckIn = async (refId: string) => {
+    console.log('participant', { refId });
 
-    const resObj = await res.json();
-
-    return resObj;
-  };
-
-  const handleOnCheckIn = async (participant: Participant) => {
-    console.log('participant', { participant });
     try {
-      const docRef = doc(fs, 'participants', participant.email);
-      const docSnap = await getDoc(docRef);
+      const docRef = doc(fs, 'participants', refId);
+      const docSnap = await getDoc(docRef as DocumentReference<Participant>);
+      // const docSnap = await getDoc<Participant, DocumentReference<Participant>>(
+      //   docRef
+      // );
 
       const realtimeParticipantsRef = ref(db, 'checkInCount');
+      const realtimeDisplayParticipantRef = ref(db, 'displayParticipant');
 
-      if (docSnap.exists()) {
-        alert('Already Checked In!');
-        setQRText(undefined);
+      if (!docSnap.exists()) {
+        // invalid ref
+        console.log("Can't find the Participant");
+      }
+
+      const person = docSnap.data();
+
+      console.log({ person });
+
+      if (!person) {
+        console.log('No participant data');
+        return;
+      }
+
+      if (checkCheckPoints(checkPointCode, person)) {
+        setResponse({ msg: 'Already Checked In! ', status: 'ERROR' });
+        // alert(`Already Checked In! to ${checkPointCode}`);
+        // setQRText(undefined);
       } else {
-        const res = await setDoc(docRef, {
-          ...participant,
-          checkInTime: new Date(),
+        person.checkIns.push({
+          checkedInTime: new Date().toISOString(),
+          checkpointCode: checkPointCode,
+          isChecked: true,
         });
 
-        const countRes = await runTransaction(
-          realtimeParticipantsRef,
-          (data) => {
-            console.log('data', { data });
-            if (data !== undefined) {
-              data++;
-            }
-            return data;
+        /**
+         * Update the document
+         */
+        await setDoc(docRef, {
+          ...person,
+        } as Participant);
+
+        /**
+         * update the realtime db
+         */
+        await runTransaction(realtimeParticipantsRef, (data) => {
+          console.log('data', { data });
+          if (data !== undefined) {
+            data++;
           }
-        );
+          return data;
+        });
+
+        /**
+         * update the realtime db
+         */
+        await runTransaction(realtimeDisplayParticipantRef, (data) => {
+          console.log('data display participant', { data });
+          if (!data) {
+            set(realtimeDisplayParticipantRef, {
+              ...person,
+            });
+          }
+          data = {
+            ...person,
+          };
+          return data;
+        });
+
         /** TO Fix IOS issue  */
         // navigator.vibrate(1000);
-        setScannedPerson(participant);
-        setQRText(undefined);
+        setScannedPerson(person);
+        setTimeout(() => {
+          setScannedPerson(undefined);
+        }, 2000);
+        // setQRText(undefined);
       }
     } catch (e) {
       alert('Error! ❌');
       console.error('Error Scanning', e);
     }
   };
+
+  useEffect(() => {
+    console.log('useEffect', { camState });
+    if (camState) qrScanner.current?.setCamera(camState);
+  }, [camState]);
+
   return (
     <div className={styles['container']}>
+      <Snackbar
+        open={response !== undefined}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+        autoHideDuration={1500}
+        onClose={() => setResponse(undefined)}
+        style={{ bottom: '10vh' }}
+      >
+        <Alert
+          severity={
+            response?.status === 'DONE'
+              ? 'success'
+              : response?.status === 'ERROR'
+              ? 'error'
+              : 'warning'
+          }
+          sx={{ width: '100%' }}
+        >
+          {response?.msg}
+        </Alert>
+      </Snackbar>
+
       {isLoading && (
         <div
           style={{
@@ -168,10 +220,17 @@ export function ScannerContainer() {
           textAlign: 'center',
         }}
       >
-        <Stack direction="column" style={{ textAlign: 'center' }}>
-          <div>Total Check Ins:</div>
-          <Typography variant="h3">{count}</Typography>
-          <div>
+        <Stack
+          direction="column"
+          style={{
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignContent: 'center',
+          }}
+        >
+          {/* <div>
             <Button
               onClick={() => setShowScanner((prev) => !prev)}
               variant="contained"
@@ -179,22 +238,76 @@ export function ScannerContainer() {
               component="span"
               endIcon={showScanner ? <CloseIcon /> : <CameraAltIcon />}
             >
-              {showScanner ? 'Close' : 'Start Scan'}
+              {showScanner ? "Close" : "Start Scan"}
             </Button>
+          </div> */}
+          <IconButton
+            size="large"
+            onClick={() =>
+              setCamState((prev) => (prev === 'user' ? 'environment' : 'user'))
+            }
+          >
+            <CameraswitchIcon style={{ fontSize: 30 }}></CameraswitchIcon>
+            {/* <HighlightOff style={{ fontSize: 30 }} /> */}
+          </IconButton>
+          <div
+            className="md:max-w-[780px]"
+            style={{ width: '75vw', borderRadius: 10 }}
+            id="video-container"
+          >
+            <video style={{ borderRadius: 10 }} ref={videoRef as any}></video>
           </div>
         </Stack>
-        {showScanner && (
+        {/* {showScanner && (
           <QrReader
-            scanDelay={2000}
-            constraints={{ facingMode: 'environment', latency: 2000 }}
+            // ViewFinder={ViewFinder}
+            constraints={{ facingMode: "environment" }}
             onResult={(result, error) => {
-              if (result) {
+              // setScannedPerson(undefined);
+              console.log("qr READ:::", { test: result?.getText(), qrText });
+
+              if (
+                !!result &&
+                result.getText().toLowerCase() !== qrText?.toLowerCase()
+              ) {
                 setQRText(result.getText());
               }
             }}
           />
-        )}
-        {scannedPerson && <InfoCard {...scannedPerson} isOk={true} />}
+        )} */}
+
+        <Backdrop
+          sx={{
+            textAlign: 'center',
+            color: '#fff',
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+          }}
+          open={scannedPerson !== undefined}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onClick={() => {}}
+        >
+          <Stack
+            style={{
+              textAlign: 'center',
+              display: 'flex',
+              justifyItems: 'center',
+            }}
+          >
+            <div>
+              <CheckCircleIcon sx={{ color: '#4cbb17', fontSize: 100 }} />
+            </div>
+            <div style={{ fontSize: 20 }}>Checked In</div>
+            <div style={{ fontSize: 30 }}>{scannedPerson?.employee_name}</div>
+            <IconButton
+              style={{ color: 'white', marginTop: 20 }}
+              size="large"
+              aria-label="delete"
+              onClick={() => setScannedPerson(undefined)}
+            >
+              <HighlightOff style={{ fontSize: 30 }} />
+            </IconButton>
+          </Stack>
+        </Backdrop>
       </Box>
     </div>
   );
