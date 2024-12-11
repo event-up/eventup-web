@@ -14,6 +14,10 @@ export interface Participant {
     contestantId: string;
     timestamp: string;
   }[];
+  //todo deactivate
+  children: { name: string }[];
+  spouse: boolean;
+  food_pref: string;
 }
 
 export interface Contestant {
