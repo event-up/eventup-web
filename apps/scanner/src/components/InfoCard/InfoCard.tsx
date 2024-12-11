@@ -6,7 +6,7 @@ interface InfoCardProps {
   email: string;
   refId: string;
   isOk: boolean;
-  children: any;
+  children?: any;
 }
 
 const InfoCard: FC<InfoCardProps> = ({
