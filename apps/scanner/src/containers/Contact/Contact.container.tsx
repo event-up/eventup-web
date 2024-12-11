@@ -19,10 +19,10 @@ import {
   where,
 } from 'firebase/firestore';
 import { useState } from 'react';
-import { Participant } from '../../components/commonTypes';
 import { checkCheckPoints, YesNoToBoolean } from '../../helpers/helpers';
 import { fs, db } from '../../app/app';
 import InfoCard from '../../components/InfoCard/InfoCard';
+import { Participant } from '@eventup-web/eventup-models';
 
 export function ContactContainer(checkPoint: string) {
   const [inputval, setInputVal] = useState<string>('');

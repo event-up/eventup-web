@@ -22,7 +22,7 @@ import {
 } from '../../helpers/helpers';
 import { app, db, fs } from '../../app/app';
 import QrScanner from 'qr-scanner';
-import { Participant } from '../../components/commonTypes';
+import { Participant } from '@eventup-web/eventup-models';
 
 export function ScannerContainer(checkPointCode: string) {
   const analitics = getAnalytics(app);
