@@ -8,7 +8,7 @@ interface InfoCardProps {
   refId: string;
   isOk: boolean;
   spouse: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   childrenCount: number;
 }
 

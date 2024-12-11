@@ -10,13 +10,13 @@ import {
   Snackbar,
   TextField,
 } from '@mui/material';
-import { ref, runTransaction } from 'firebase/database';
+import { ref, runTransaction, set } from 'firebase/database';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { db, fs } from '../../app/app';
 import { Participant } from '../../components/commonTypes';
 import InfoCard from '../../components/InfoCard/InfoCard';
-import { checkCheckPoints } from '../../helpers/helpers';
+import { checkCheckPoints, YesNoToBoolean } from '../../helpers/helpers';
 
 export function ReferenceContainer(checkPoint: string) {
   const [inputval, setInputVal] = useState('');
@@ -65,15 +65,15 @@ export function ReferenceContainer(checkPoint: string) {
         return data;
       });
 
-      // // Update for Display
-      // await runTransaction(realtimeDisplayParticipantRef, (data) => {
-      //   console.log("data display participant", { data });
-      //   if (!data) {
-      //     set(realtimeDisplayParticipantRef, person);
-      //   }
+      // Update for Display
+      await runTransaction(realtimeDisplayParticipantRef, (data) => {
+        console.log('data display participant', { data });
+        if (!data) {
+          set(realtimeDisplayParticipantRef, person);
+        }
 
-      //   return data;
-      // });
+        return data;
+      });
 
       setIsLoading(false);
 
@@ -103,7 +103,12 @@ export function ReferenceContainer(checkPoint: string) {
       setResponse({ status: 'ERROR', msg: 'Already Checked In' });
       return;
     }
-    setParticipant(data as Participant);
+    setParticipant({
+      ...data,
+      spouse: YesNoToBoolean(data.spouse as any),
+      children: data.children.filter((d) => d.name !== ''),
+    } as Participant);
+
     setShowModal(true);
   };
 
@@ -154,24 +159,24 @@ export function ReferenceContainer(checkPoint: string) {
             </Alert>
           </Snackbar>
           {/* <div
-          style={{
-            width: "90%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "left",
-            minHeight: "80px",
-          }}
-        >
-          {response && (
-            <Alert
-              style={{ maxWidth: "30%" }}
-              variant="filled"
-              severity={response?.status === "DONE" ? "success" : "error"}
-            >
-              {response.msg}
-            </Alert>
-          )}
-        </div> */}
+    style={{
+      width: "90%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "left",
+      minHeight: "80px",
+    }}
+  >
+    {response && (
+      <Alert
+        style={{ maxWidth: "30%" }}
+        variant="filled"
+        severity={response?.status === "DONE" ? "success" : "error"}
+      >
+        {response.msg}
+      </Alert>
+    )}
+  </div> */}
         </div>
         <div
           style={{
@@ -194,7 +199,7 @@ export function ReferenceContainer(checkPoint: string) {
               label="Enter Ref Code here"
               // placeholder="Enter Ref Code here"
               onChange={(e) => {
-                setInputVal(e.target.value);
+                setInputVal(e.target.value.toUpperCase());
               }}
               value={inputval}
             />
@@ -206,13 +211,11 @@ export function ReferenceContainer(checkPoint: string) {
             >
               Search
             </Button>
-
             {/* <IconButton href="" color="primary" onClick={getDetails}>
-            <ArrowForwardIosRounded />
-          </IconButton> */}
+      <ArrowForwardIosRounded />
+    </IconButton> */}
           </div>
         </div>
-
         <Dialog
           open={showModal}
           onClose={() => {
@@ -227,10 +230,12 @@ export function ReferenceContainer(checkPoint: string) {
           <DialogContent>
             {participant && (
               <InfoCard
+                childrenCount={participant.children.length}
+                spouse={participant.spouse}
                 email={participant.email}
                 name={participant.employee_name}
                 refId={participant.ref_id}
-                isOk={true}
+                isOk={false}
               />
             )}
           </DialogContent>
@@ -254,7 +259,7 @@ export function ReferenceContainer(checkPoint: string) {
             </Button>
           </DialogActions>
         </Dialog>
-      </div>{' '}
+      </div>
     </div>
   );
 }
