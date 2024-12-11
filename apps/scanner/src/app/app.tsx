@@ -6,15 +6,15 @@ import { getFirestore } from 'firebase/firestore';
 import { getMessaging } from 'firebase/messaging';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBfhl0rgY5wd9vUStADdbksDdLUlNhwVL0',
-  authDomain: 'party-qr-reader-christmas.firebaseapp.com',
+  apiKey: 'AIzaSyBK1HDFzWJw0DbNHA1Gpp6WoLCbnL0c94U',
+  authDomain: 'party-qr-kiddies.firebaseapp.com',
   databaseURL:
-    'https://party-qr-reader-christmas-default-rtdb.asia-southeast1.firebasedatabase.app',
-  projectId: 'party-qr-reader-christmas',
-  storageBucket: 'party-qr-reader-christmas.appspot.com',
-  messagingSenderId: '78984338478',
-  appId: '1:78984338478:web:6fee7ac721d7b4814e13bf',
-  measurementId: 'G-B37F53Q8C8',
+    'https://party-qr-kiddies-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: 'party-qr-kiddies',
+  storageBucket: 'party-qr-kiddies.appspot.com',
+  messagingSenderId: '291907730539',
+  appId: '1:291907730539:web:9fa6c4a4308e4b9dc8452e',
+  measurementId: 'G-9T87C8LTMQ',
 };
 
 export const app = initializeApp(firebaseConfig);

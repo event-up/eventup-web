@@ -8,3 +8,13 @@ export const checkCheckPoints = (
     (ck) => ck.checkpointCode === currentCheckPointCode && ck.isChecked === true
   );
 };
+
+export const YesNoToBoolean = (str: 'Yes' | 'No') => {
+  if (str === 'Yes') return true;
+  return false;
+};
+
+export const BooleanToYesNo = (bool: boolean) => {
+  if (bool) return 'Yes';
+  return 'No';
+};

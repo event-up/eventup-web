@@ -10,8 +10,11 @@ export interface Participant {
     isChecked: boolean;
     checkedInTime: string;
   }[];
-}
 
+  children: { name: string }[];
+  spouse: boolean;
+  food_pref: string;
+}
 export interface DecodeResponse {
   data: {
     beverages?: string[];

@@ -15,7 +15,11 @@ import { useEffect, useRef, useState } from 'react';
 import { HighlightOff } from '@mui/icons-material';
 import { ref, runTransaction, set } from 'firebase/database';
 import { DocumentReference, doc, getDoc, setDoc } from 'firebase/firestore';
-import { checkCheckPoints } from '../../helpers/helpers';
+import {
+  BooleanToYesNo,
+  checkCheckPoints,
+  YesNoToBoolean,
+} from '../../helpers/helpers';
 import { app, db, fs } from '../../app/app';
 import QrScanner from 'qr-scanner';
 import { Participant } from '../../components/commonTypes';
@@ -57,6 +61,20 @@ export function ScannerContainer(checkPointCode: string) {
     qr.start();
 
     qrScanner.current = qr;
+
+    /**
+     * Reload the app for cache clearing
+     * refresh after every 30 mins
+     */
+    setTimeout(() => {
+      window.location.reload();
+    }, 60 * 60 * 1000);
+
+    return () => {
+      qrScanner.current?.stop();
+
+      qrScanner.current?.destroy();
+    };
   }, [videoRef, showScanner]);
 
   useEffect(() => {
@@ -155,10 +173,15 @@ export function ScannerContainer(checkPointCode: string) {
 
         /** TO Fix IOS issue  */
         // navigator.vibrate(1000);
-        setScannedPerson(person);
+        setScannedPerson({
+          ...person,
+          spouse: YesNoToBoolean(person.spouse as any),
+          children: person.children.filter((child: any) => child.name !== ''),
+        });
+
         setTimeout(() => {
           setScannedPerson(undefined);
-        }, 2000);
+        }, 4000);
         // setQRText(undefined);
       }
     } catch (e) {
@@ -282,6 +305,7 @@ export function ScannerContainer(checkPointCode: string) {
             color: '#fff',
             zIndex: (theme) => theme.zIndex.drawer + 1,
           }}
+          className=" backdrop-blur-xl  bg-white/50"
           open={scannedPerson !== undefined}
           // eslint-disable-next-line @typescript-eslint/no-empty-function
           onClick={() => {}}
@@ -298,6 +322,13 @@ export function ScannerContainer(checkPointCode: string) {
             </div>
             <div style={{ fontSize: 20 }}>Checked In</div>
             <div style={{ fontSize: 30 }}>{scannedPerson?.employee_name}</div>
+            <ul style={{ fontSize: 30 }}>
+              <li>
+                Spouse attending :{' '}
+                {BooleanToYesNo(scannedPerson?.spouse || false)}
+              </li>
+              <li>Kids count : {scannedPerson?.children.length}</li>
+            </ul>
             <IconButton
               style={{ color: 'white', marginTop: 20 }}
               size="large"

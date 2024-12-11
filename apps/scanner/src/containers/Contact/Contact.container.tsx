@@ -1,7 +1,14 @@
 import styles from './contact.container.module.scss';
 import { AddCircleOutline, Done } from '@mui/icons-material';
-import { Button, Chip, InputAdornment, TextField } from '@mui/material';
-import { ref, runTransaction } from 'firebase/database';
+import {
+  Alert,
+  Button,
+  Chip,
+  InputAdornment,
+  Snackbar,
+  TextField,
+} from '@mui/material';
+import { ref, runTransaction, set } from 'firebase/database';
 import {
   collection,
   doc,
@@ -12,16 +19,19 @@ import {
   where,
 } from 'firebase/firestore';
 import { useState } from 'react';
-import { db, fs } from '../../app/app';
 import { Participant } from '../../components/commonTypes';
+import { checkCheckPoints, YesNoToBoolean } from '../../helpers/helpers';
+import { fs, db } from '../../app/app';
 import InfoCard from '../../components/InfoCard/InfoCard';
-import { checkCheckPoints } from '../../helpers/helpers';
 
 export function ContactContainer(checkPoint: string) {
   const [inputval, setInputVal] = useState<string>('');
   const [participantsList, setParticipantsList] = useState<Participant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [response, setResponse] = useState<{
+    status: 'DONE' | 'ERROR' | 'WARN';
+    msg: string;
+  }>();
   const participantsRef = collection(fs, 'participants');
 
   const queryFirestore = async () => {
@@ -33,9 +43,17 @@ export function ContactContainer(checkPoint: string) {
     );
     const querySnapShot = await getDocs(q);
     const pl = querySnapShot.docs.map((o) => {
-      return o.data() as Participant;
+      const data = o.data() as Participant;
+      return {
+        ...data,
+        spouse: YesNoToBoolean(data.spouse as any),
+        children: data.children.filter((d) => d.name !== ''),
+      };
     });
     console.log({ pl });
+    if (pl.length === 0) {
+      setResponse({ status: 'WARN', msg: 'No records found' });
+    }
     setParticipantsList(pl);
   };
 
@@ -77,15 +95,15 @@ export function ContactContainer(checkPoint: string) {
         return data;
       });
 
-      // // Update for Display
-      // await runTransaction(realtimeDisplayParticipantRef, (data) => {
-      //   console.log("data display participant", { data });
-      //   if (!data) {
-      //     set(realtimeDisplayParticipantRef, person);
-      //   }
+      // Update for Display
+      await runTransaction(realtimeDisplayParticipantRef, (data) => {
+        console.log('data display participant', { data });
+        if (!data) {
+          set(realtimeDisplayParticipantRef, person);
+        }
 
-      //   return person;
-      // });
+        return person;
+      });
 
       setIsLoading(false);
 
@@ -114,6 +132,26 @@ export function ContactContainer(checkPoint: string) {
             paddingTop: '15px',
           }}
         >
+          <Snackbar
+            open={response !== undefined}
+            anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+            autoHideDuration={1500}
+            onClose={() => setResponse(undefined)}
+            style={{ bottom: '10vh' }}
+          >
+            <Alert
+              severity={
+                response?.status === 'DONE'
+                  ? 'success'
+                  : response?.status === 'ERROR'
+                  ? 'error'
+                  : 'warning'
+              }
+              sx={{ width: '100%' }}
+            >
+              {response?.msg}
+            </Alert>
+          </Snackbar>
           <div>
             <div
               style={{
@@ -148,9 +186,11 @@ export function ContactContainer(checkPoint: string) {
               {participantsList.map((participant) => (
                 <div style={{ marginBottom: '5px' }}>
                   <InfoCard
+                    childrenCount={participant.children.length}
+                    spouse={participant.spouse}
                     email={participant.email}
                     isOk={false}
-                    name={participant.first_name}
+                    name={participant.employee_name}
                     refId={participant.ref_id}
                   >
                     {!checkCheckPoints(checkPoint, participant) && (
@@ -180,7 +220,7 @@ export function ContactContainer(checkPoint: string) {
             </div>
           </div>
         </div>
-      </div>{' '}
+      </div>
     </div>
   );
 }
