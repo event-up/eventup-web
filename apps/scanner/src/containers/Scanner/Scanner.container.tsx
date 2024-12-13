@@ -2,35 +2,22 @@ import styles from './scanner.container.module.scss';
 import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
-  Alert,
   Backdrop,
   Box,
   CircularProgress,
   IconButton,
-  Snackbar,
   Stack,
 } from '@mui/material';
-import { getAnalytics, logEvent } from 'firebase/analytics';
 import { useEffect, useRef, useState } from 'react';
 import { HighlightOff } from '@mui/icons-material';
-import { ref, runTransaction, set } from 'firebase/database';
-import { DocumentReference, doc, getDoc, setDoc } from 'firebase/firestore';
-import {
-  BooleanToYesNo,
-  checkCheckPoints,
-  YesNoToBoolean,
-} from '../../helpers/helpers';
-import { app, db, fs } from '../../app/app';
+
 import QrScanner from 'qr-scanner';
-import { Participant } from '../../components/commonTypes';
+import { Participant } from '@eventup-web/eventup-models';
+import { handleParticipantCheckIn } from '../../services';
+import { useRootContext } from '../../app/RootContext';
 
 export function ScannerContainer(checkPointCode: string) {
-  const analitics = getAnalytics(app);
-  const [response, setResponse] = useState<{
-    status: 'DONE' | 'ERROR' | 'WARN';
-    msg: string;
-  }>();
-
+  const { showMessage } = useRootContext();
   const [qrText, setQRText] = useState<string | undefined>();
   const [scannedPerson, setScannedPerson] = useState<Participant | undefined>();
   const [isLoading, setisLoading] = useState(false);
@@ -55,11 +42,7 @@ export function ScannerContainer(checkPointCode: string) {
         // maxScansPerSecond: 10,
       }
     );
-
-    console.log({ qr });
-
     qr.start();
-
     qrScanner.current = qr;
 
     /**
@@ -72,121 +55,42 @@ export function ScannerContainer(checkPointCode: string) {
 
     return () => {
       qrScanner.current?.stop();
-
       qrScanner.current?.destroy();
     };
   }, [videoRef, showScanner]);
 
   useEffect(() => {
-    logEvent(analitics, 'page_view', { page_title: 'scanner' });
-  }, []);
-
-  useEffect(() => {
     if (!qrText) return;
-    logEvent(analitics, 'function', { place: 'useEffect', qrText });
 
-    console.log('on data change:::', qrText);
-    setisLoading(true);
+    console.log('QR Text changed:::', qrText);
 
-    handleOnCheckIn(qrText)
-      .then((res) => {
-        setisLoading(false);
-      })
-      .catch((e) => {
-        console.log('error:', { e });
-        setisLoading(false);
-      });
+    handleOnCheckIn(qrText);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qrText]);
 
   const handleOnCheckIn = async (refId: string) => {
-    console.log('participant', { refId });
-
     try {
-      const docRef = doc(fs, 'participants', refId);
-      const docSnap = await getDoc(docRef as DocumentReference<Participant>);
-      // const docSnap = await getDoc<Participant, DocumentReference<Participant>>(
-      //   docRef
-      // );
+      setisLoading(true);
+      const updatedParticipant = await handleParticipantCheckIn(
+        refId,
+        checkPointCode
+      );
 
-      const realtimeParticipantsRef = ref(db, 'checkInCount');
-      const realtimeDisplayParticipantRef = ref(db, 'displayParticipant');
+      setScannedPerson({
+        ...updatedParticipant,
+      });
 
-      if (!docSnap.exists()) {
-        // invalid ref
-        console.log("Can't find the Participant");
-      }
+      setTimeout(() => {
+        setScannedPerson(undefined);
+      }, 4000);
 
-      const person = docSnap.data();
-
-      console.log({ person });
-
-      if (!person) {
-        console.log('No participant data');
-        return;
-      }
-
-      if (checkCheckPoints(checkPointCode, person)) {
-        setResponse({ msg: 'Already Checked In! ', status: 'ERROR' });
-        // alert(`Already Checked In! to ${checkPointCode}`);
-        // setQRText(undefined);
-      } else {
-        person.checkIns.push({
-          checkedInTime: new Date().toISOString(),
-          checkpointCode: checkPointCode,
-          isChecked: true,
-        });
-
-        /**
-         * Update the document
-         */
-        await setDoc(docRef, {
-          ...person,
-        } as Participant);
-
-        /**
-         * update the realtime db
-         */
-        await runTransaction(realtimeParticipantsRef, (data) => {
-          console.log('data', { data });
-          if (data !== undefined) {
-            data++;
-          }
-          return data;
-        });
-
-        /**
-         * update the realtime db
-         */
-        await runTransaction(realtimeDisplayParticipantRef, (data) => {
-          console.log('data display participant', { data });
-          if (!data) {
-            set(realtimeDisplayParticipantRef, {
-              ...person,
-            });
-          }
-          data = {
-            ...person,
-          };
-          return data;
-        });
-
-        /** TO Fix IOS issue  */
-        // navigator.vibrate(1000);
-        setScannedPerson({
-          ...person,
-          spouse: YesNoToBoolean(person.spouse as any),
-          children: person.children.filter((child: any) => child.name !== ''),
-        });
-
-        setTimeout(() => {
-          setScannedPerson(undefined);
-        }, 4000);
-        // setQRText(undefined);
-      }
+      setisLoading(false);
     } catch (e) {
-      alert('Error! ❌');
+      // Errors are caught here
+      const error = e as Error;
+      showMessage('ERROR', error.message);
       console.error('Error Scanning', e);
+      setisLoading(false);
     }
   };
 
@@ -197,27 +101,6 @@ export function ScannerContainer(checkPointCode: string) {
 
   return (
     <div className={styles['container']}>
-      <Snackbar
-        open={response !== undefined}
-        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
-        autoHideDuration={1500}
-        onClose={() => setResponse(undefined)}
-        style={{ bottom: '10vh' }}
-      >
-        <Alert
-          severity={
-            response?.status === 'DONE'
-              ? 'success'
-              : response?.status === 'ERROR'
-              ? 'error'
-              : 'warning'
-          }
-          sx={{ width: '100%' }}
-        >
-          {response?.msg}
-        </Alert>
-      </Snackbar>
-
       {isLoading && (
         <div
           style={{
@@ -322,13 +205,7 @@ export function ScannerContainer(checkPointCode: string) {
             </div>
             <div style={{ fontSize: 20 }}>Checked In</div>
             <div style={{ fontSize: 30 }}>{scannedPerson?.employee_name}</div>
-            <ul style={{ fontSize: 30 }}>
-              <li>
-                Spouse attending :{' '}
-                {BooleanToYesNo(scannedPerson?.spouse || false)}
-              </li>
-              <li>Kids count : {scannedPerson?.children.length}</li>
-            </ul>
+            <ul style={{ fontSize: 30 }}></ul>
             <IconButton
               style={{ color: 'white', marginTop: 20 }}
               size="large"

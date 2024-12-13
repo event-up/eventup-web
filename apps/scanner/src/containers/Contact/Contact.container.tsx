@@ -19,10 +19,10 @@ import {
   where,
 } from 'firebase/firestore';
 import { useState } from 'react';
-import { Participant } from '../../components/commonTypes';
 import { checkCheckPoints, YesNoToBoolean } from '../../helpers/helpers';
-import { fs, db } from '../../app/app';
 import InfoCard from '../../components/InfoCard/InfoCard';
+import { Participant } from '@eventup-web/eventup-models';
+import { db, fs } from '@eventup-web/shared';
 
 export function ContactContainer(checkPoint: string) {
   const [inputval, setInputVal] = useState<string>('');
@@ -46,8 +46,8 @@ export function ContactContainer(checkPoint: string) {
       const data = o.data() as Participant;
       return {
         ...data,
-        spouse: YesNoToBoolean(data.spouse as any),
-        children: data.children.filter((d) => d.name !== ''),
+        // spouse: YesNoToBoolean(data.spouse as any),
+        // children: data.children.filter((d) => d.name !== ''),
       };
     });
     console.log({ pl });
@@ -186,8 +186,8 @@ export function ContactContainer(checkPoint: string) {
               {participantsList.map((participant) => (
                 <div style={{ marginBottom: '5px' }}>
                   <InfoCard
-                    childrenCount={participant.children.length}
-                    spouse={participant.spouse}
+                    childrenCount={0}
+                    spouse={false}
                     email={participant.email}
                     isOk={false}
                     name={participant.employee_name}

@@ -1,4 +1,4 @@
-import { Participant } from '../components/commonTypes';
+import { Participant } from '@eventup-web/eventup-models';
 
 export const checkCheckPoints = (
   currentCheckPointCode: string,

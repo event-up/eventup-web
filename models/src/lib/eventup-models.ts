@@ -14,6 +14,8 @@ export interface Participant {
     contestantId: string;
     timestamp: string;
   }[];
+
+  food_pref: string;
 }
 
 export interface Contestant {
