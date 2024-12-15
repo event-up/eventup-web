@@ -9,6 +9,7 @@ import {
 import { fs } from './configs';
 import { Contestant, Participant } from '@eventup-web/eventup-models';
 import { update } from 'firebase/database';
+import { incrementContestantVote } from './realtime';
 
 const PARTICIPANTS_COLLECTION = 'participants';
 const CONTESTANTS_COLLECTION = 'contestants';
@@ -95,6 +96,9 @@ export const voteContestant = async (
 
   await updateDoc(contestantDocRef, { votes: increment(1) });
   await updateDoc(participantDocRef, { ...participant });
+
+  // update the realtime ref
+  await incrementContestantVote(participantId);
 
   return true;
 };
