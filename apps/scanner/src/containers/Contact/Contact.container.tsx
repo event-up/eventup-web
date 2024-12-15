@@ -22,6 +22,7 @@ import { useState } from 'react';
 import { checkCheckPoints } from '../../helpers/helpers';
 import InfoCard from '../../components/InfoCard/InfoCard';
 import { Participant } from '@eventup-web/eventup-models';
+import { db, fs } from '@eventup-web/shared';
 
 export function ContactContainer(checkPoint: string) {
   const [inputval, setInputVal] = useState<string>('');

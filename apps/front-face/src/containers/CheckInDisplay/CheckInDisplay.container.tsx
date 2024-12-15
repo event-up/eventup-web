@@ -192,13 +192,15 @@ export function CheckInDisplayContainer() {
                             <li>
                               Kids : {`(${first.children.length})`}
                               <span className="flex space-x-1 space-y-1 flex-col justify-center">
-                                {first.children.map((child, index) => {
-                                  return (
-                                    <Tag key={index} type={'No'}>
-                                      {child.name}
-                                    </Tag>
-                                  );
-                                })}
+                                {first.children.map(
+                                  (child: any, index: number) => {
+                                    return (
+                                      <Tag key={index} type={'No'}>
+                                        {child.name}
+                                      </Tag>
+                                    );
+                                  }
+                                )}
                               </span>{' '}
                             </li>
                           </ul>

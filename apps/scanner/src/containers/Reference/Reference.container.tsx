@@ -14,7 +14,6 @@ import { ref, runTransaction, set } from 'firebase/database';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Participant } from '@eventup-web/eventup-models';
 import { useState } from 'react';
-import { db, fs } from '../../app/app';
 import InfoCard from '../../components/InfoCard/InfoCard';
 import { checkCheckPoints } from '../../helpers/helpers';
 import { db, fs } from '@eventup-web/shared';
