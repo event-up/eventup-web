@@ -33,6 +33,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - uses: nrwl/nx-set-shas@v4
 
+      - run: yarn nx run-many --targets=build
       - name: Deploy to Firebase Hosting
         uses: w9jds/firebase-action@master
         with:
