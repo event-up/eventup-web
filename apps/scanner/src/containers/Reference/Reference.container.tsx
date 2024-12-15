@@ -16,7 +16,8 @@ import { Participant } from '@eventup-web/eventup-models';
 import { useState } from 'react';
 import { db, fs } from '../../app/app';
 import InfoCard from '../../components/InfoCard/InfoCard';
-import { checkCheckPoints, YesNoToBoolean } from '../../helpers/helpers';
+import { checkCheckPoints } from '../../helpers/helpers';
+import { db, fs } from '@eventup-web/shared';
 
 export function ReferenceContainer(checkPoint: string) {
   const [inputval, setInputVal] = useState('');
@@ -105,8 +106,8 @@ export function ReferenceContainer(checkPoint: string) {
     }
     setParticipant({
       ...data,
-      spouse: YesNoToBoolean(data.spouse as any),
-      children: data.children.filter((d) => d.name !== ''),
+      // spouse: YesNoToBoolean(data.spouse as any),
+      // children: data.children.filter((d) => d.name !== ''),
     } as Participant);
 
     setShowModal(true);
@@ -230,8 +231,8 @@ export function ReferenceContainer(checkPoint: string) {
           <DialogContent>
             {participant && (
               <InfoCard
-                childrenCount={participant.children.length}
-                spouse={participant.spouse}
+                childrenCount={0}
+                spouse={false}
                 email={participant.email}
                 name={participant.employee_name}
                 refId={participant.ref_id}

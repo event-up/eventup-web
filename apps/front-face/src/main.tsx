@@ -7,6 +7,8 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+// QR-VIEW
+//  Display -> Check-in Display |  Voting Display
 root.render(
   <StrictMode>
     <BrowserRouter>
