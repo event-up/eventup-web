@@ -34,7 +34,7 @@ jobs:
       - uses: nrwl/nx-set-shas@v4
 
       - name: Deploy to Firebase Hosting
-        uses: w9jds/firebase-action@v11.4.0
+        uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
