@@ -1,4 +1,6 @@
 export interface Participant {
+  spouse: boolean;
+  children: any;
   employee_name: string;
   email: string;
   first_name: string;

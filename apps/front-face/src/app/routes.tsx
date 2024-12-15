@@ -1,6 +1,7 @@
 import { FunctionComponent, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { withSuspense } from '@eventup-web/shared';
+// import { VotingRegistrationListView } from '';
 
 const CheckInDisplayPage = lazy(
   () => import('../pages/CheckInDisplayPage/CheckInDisplayPage')
@@ -28,6 +29,10 @@ export const RootRoutes: FunctionComponent = () => {
         path="contestant-display"
         element={withSuspense(<ContestantDisplayContainer />)}
       ></Route>
+      {/* <Route
+        path="/voting-registration"
+        element={<VotingRegistrationListView />}
+      ></Route> */}
     </Routes>
   );
 };
