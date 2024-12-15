@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "eventup-lk"
+  },
+  "targets": {
+    "eventup-lk": {
+      "hosting": {
+        "admin": [
+          "eventup-auracle-admin"
+        ],
+        "web": [
+          "eventup-auracle"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
