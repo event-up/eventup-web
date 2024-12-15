@@ -38,3 +38,16 @@ export const updateDisplayParticipantRealtimeDB = async (
     return data;
   });
 };
+
+export const incrementContestantVote = async (contestantId: string) => {
+  const contestantRef = ref(db, `contestants/${contestantId}`);
+
+  return await runTransaction(contestantRef, (data) => {
+    if (data !== undefined) {
+      data++;
+    } else {
+      data = 1;
+    }
+    return data;
+  });
+};
