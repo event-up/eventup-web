@@ -1,10 +1,11 @@
-import { ref, set } from 'firebase/database';
+import { onValue, ref, set } from 'firebase/database';
 import { db } from './configs';
 import { runTransaction } from 'firebase/database';
 import { Participant } from '@eventup-web/eventup-models';
 
 const realtimeCheckInCountRef = ref(db, 'checkInCount');
 const realtimeDisplayParticipantRef = ref(db, 'displayParticipant');
+const CONTESTANTS_COLLECTION = 'contestants';
 
 export const incrementCheckInCountRealtimeDB = async () => {
   /**
@@ -49,5 +50,17 @@ export const incrementContestantVote = async (contestantId: string) => {
       data = 1;
     }
     return data;
+  });
+};
+
+export const subscribeToContestantVote = (
+  contestantId: string,
+  cb: (data: number) => void
+) => {
+  const contestantRef = ref(db, `${CONTESTANTS_COLLECTION}/${contestantId}`);
+  return onValue(contestantRef, (snapshot) => {
+    if (snapshot.val()) {
+      cb(snapshot.val());
+    }
   });
 };

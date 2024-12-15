@@ -1,13 +1,33 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import CheckInDisplayPage from '../pages/CheckInDisplayPage/CheckInDisplayPage';
-import QRViewPage from '../pages/QRViewPage/QRViewPage';
+import { withSuspense } from '@eventup-web/shared';
 
+const CheckInDisplayPage = lazy(
+  () => import('../pages/CheckInDisplayPage/CheckInDisplayPage')
+);
+const QRViewPage = lazy(() => import('../pages/QRViewPage/QRViewPage'));
+const ContestantDisplayContainer = lazy(
+  () => import('../containers/ContestantDisplay/ContestantDisplay.container')
+);
+const VoteContainer = lazy(
+  () => import('../containers/QRView/Voter/Vote.container')
+);
 export const RootRoutes: FunctionComponent = () => {
   return (
     <Routes>
-      <Route path="/checker-display/" element={<CheckInDisplayPage />}></Route>
-      <Route path="/participant" element={<QRViewPage />}></Route>
+      <Route
+        path="checker-display"
+        element={withSuspense(<CheckInDisplayPage />)}
+      ></Route>
+      <Route path="participant" element={withSuspense(<QRViewPage />)}></Route>
+      <Route
+        path="participant/vote"
+        element={withSuspense(<VoteContainer />)}
+      ></Route>
+      <Route
+        path="contestant-display"
+        element={withSuspense(<ContestantDisplayContainer />)}
+      ></Route>
     </Routes>
   );
 };

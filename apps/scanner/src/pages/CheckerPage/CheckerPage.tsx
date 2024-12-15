@@ -11,7 +11,7 @@ export function ScannerPage() {
   const navigate = useNavigate();
 
   return (
-    <div className={'bg-slate-600 h-[100vh]'}>
+    <div className={' h-[100vh]'}>
       <div className="h-[100px]"></div>
       <CheckerPageRoutes />
 

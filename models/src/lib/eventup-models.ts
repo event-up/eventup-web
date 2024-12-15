@@ -19,11 +19,13 @@ export interface Participant {
   food_pref: string;
 }
 
+type contestantCategoriesType = 'KING' | 'QUEEN';
 export interface Contestant {
   name: string;
   photoUrl: string;
   id: string;
   voteCount: number;
+  category: contestantCategoriesType;
 }
 
 export interface DecodeResponse {

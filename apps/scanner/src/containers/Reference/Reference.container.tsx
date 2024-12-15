@@ -14,10 +14,9 @@ import { ref, runTransaction, set } from 'firebase/database';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Participant } from '@eventup-web/eventup-models';
 import { useState } from 'react';
-import { db, fs } from '../../app/app';
 import InfoCard from '../../components/InfoCard/InfoCard';
 import { checkCheckPoints } from '../../helpers/helpers';
-import { db, fs } from '@eventup-web/shared';
+import { AppCamera, db, fs } from '@eventup-web/shared';
 
 export function ReferenceContainer(checkPoint: string) {
   const [inputval, setInputVal] = useState('');
@@ -159,27 +158,8 @@ export function ReferenceContainer(checkPoint: string) {
               {response?.msg}
             </Alert>
           </Snackbar>
-          {/* <div
-    style={{
-      width: "90%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "left",
-      minHeight: "80px",
-    }}
-  >
-    {response && (
-      <Alert
-        style={{ maxWidth: "30%" }}
-        variant="filled"
-        severity={response?.status === "DONE" ? "success" : "error"}
-      >
-        {response.msg}
-      </Alert>
-    )}
-  </div> */}
         </div>
-        <div
+        {/* <div
           style={{
             display: 'flex',
             alignContent: 'center',
@@ -212,11 +192,15 @@ export function ReferenceContainer(checkPoint: string) {
             >
               Search
             </Button>
-            {/* <IconButton href="" color="primary" onClick={getDetails}>
-      <ArrowForwardIosRounded />
-    </IconButton> */}
+
+           
           </div>
-        </div>
+        </div> */}
+        <AppCamera
+          onImageCapture={() => {
+            console.log('capt');
+          }}
+        />
         <Dialog
           open={showModal}
           onClose={() => {

@@ -1,7 +1,9 @@
 import {
+  collection,
   doc,
   DocumentReference,
   getDoc,
+  getDocs,
   increment,
   setDoc,
   updateDoc,
@@ -30,7 +32,7 @@ export const searchParticipantByRefId = async (refId: string) => {
   const docSnap = await getDoc(docRef as DocumentReference<Participant>);
 
   if (!docSnap.exists()) {
-    return null;
+    throw new Error("Can't find the participant");
   }
 
   const person = docSnap.data();
@@ -70,6 +72,18 @@ export const getContestant = async (contestantId: string) => {
 
   const contestant = docSnap.data();
   return contestant;
+};
+
+export const getAllContestants = async () => {
+  const contestantsCollectionRef = collection(fs, CONTESTANTS_COLLECTION);
+  const querySnapshot = await getDocs(contestantsCollectionRef);
+
+  const contestants: Contestant[] = [];
+  querySnapshot.forEach((doc) => {
+    contestants.push(doc.data() as Contestant);
+  });
+
+  return contestants;
 };
 
 export const voteContestant = async (
