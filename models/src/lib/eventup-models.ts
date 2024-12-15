@@ -15,6 +15,7 @@ export interface Participant {
     timestamp: string;
   }[];
 
+  //todo deactivate
   food_pref: string;
 }
 
