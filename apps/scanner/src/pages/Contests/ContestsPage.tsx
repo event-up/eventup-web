@@ -10,7 +10,7 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const tabs = ['contestants', 'management'];
+const tabs = ['contestants', 'manage'];
 
 export function ContestsPage() {
   const [tabKey, setTabKey] = useState(0);
@@ -39,7 +39,7 @@ export function ContestsPage() {
             icon={<PortraitOutlined />}
           />
           <BottomNavigationAction
-            key="management"
+            key="manage"
             label="Manage"
             icon={<PlayArrow />}
           />

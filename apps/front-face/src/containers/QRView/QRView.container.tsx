@@ -1,12 +1,16 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import coverImg from '../../assets/disco.jpg';
 import lolcLogo from '../../assets/LOLC_Technologies.png';
 import eventLogo from '../../assets/event_logo.png';
 import { Participant } from '@eventup-web/eventup-models';
-import { searchParticipantByRefId } from '@eventup-web/shared';
+import {
+  searchParticipantByRefId,
+  subscribeToVotingStatus,
+} from '@eventup-web/shared';
 import { useRootContext } from '../../app/RootContext';
+import { Button } from '@mui/material';
 
 interface QRViewPageProps {}
 
@@ -30,6 +34,10 @@ export const QRViewContainer: FC<QRViewPageProps> = () => {
   const [participant, setParticipant] = useState<Participant>();
   const query = new URLSearchParams(search);
   const refId = query.get('refid');
+  const [votingStatus, setvotingStatus] = useState(false);
+  const navigate = useNavigate();
+
+  console.log({ refId });
 
   useEffect(() => {
     if (!refId) return;
@@ -44,6 +52,24 @@ export const QRViewContainer: FC<QRViewPageProps> = () => {
         showMessage('ERROR', e.message);
       });
   }, [refId]);
+
+  /**
+   * Subscription to voting Status
+   * TODO: subscribe the voting screens as well
+   */
+  useEffect(() => {
+    const unsubscribe = subscribeToVotingStatus((status) => {
+      setvotingStatus(status);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const navigateToVoting = () => {
+    navigate(`vote?refid=${refId}`);
+  };
 
   console.log({ participant });
 
@@ -119,6 +145,10 @@ export const QRViewContainer: FC<QRViewPageProps> = () => {
           <img className="w-[100px]" src={lolcLogo} alt="powered by logo" />
           {/* <img className="w-[40px]" src={spiritLogo} alt="powered by logo" /> */}
         </div>
+
+        <Button disabled={!votingStatus} onClick={navigateToVoting}>
+          Start Voting
+        </Button>
         {/* <div className="italic text-gray-600">Powered By</div> */}
 
         <footer className="w-full flex flex-col bg-slate-100 rounded-t-xl mt-5">
