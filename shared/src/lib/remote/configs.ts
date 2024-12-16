@@ -2,6 +2,7 @@ import { getMessaging } from 'firebase/messaging';
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBK1HDFzWJw0DbNHA1Gpp6WoLCbnL0c94U',
@@ -20,4 +21,5 @@ localStorage.setItem('isInitialRaffleScreen', String(true));
 const db = getDatabase(app);
 const fs = getFirestore(app);
 const messaging = getMessaging(app);
-export { db, fs, messaging };
+const storage = getStorage(app);
+export { db, fs, messaging, storage };

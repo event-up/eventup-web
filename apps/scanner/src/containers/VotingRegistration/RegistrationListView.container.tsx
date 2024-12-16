@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Typography,
@@ -13,9 +13,27 @@ import {
   Box,
   Divider,
   Stack,
+  Fab,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from '@mui/material';
-import { Add as AddIcon, KingBed, Female } from '@mui/icons-material';
+import {
+  Add as AddIcon,
+  KingBed,
+  Female,
+  AddCircleOutline,
+  CloseRounded,
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import InfoCard from '../../components/InfoCard/InfoCard';
+import { set } from 'firebase/database';
+import { create } from 'domain';
+import { RegistrationCreateView } from './RegistrationCreateView.container';
+import { getAllContestants } from '@eventup-web/shared';
+import { useRootContext } from '../../app/RootContext';
+import { Contestant } from '@eventup-web/eventup-models';
 
 // Default Contestant Data
 const initialKings = [
@@ -31,21 +49,33 @@ const initialQueens = [
 ];
 
 export function VotingRegistrationListView() {
-  const [kings, setKings] = useState(initialKings);
-  const [queens, setQueens] = useState(initialQueens);
+  const [queens, setQueens] = useState<Contestant[]>([]);
+  const { showMessage } = useRootContext();
+  const [createModal, setcreateModal] = useState({ visible: false });
+  const [reFetch, setreFetch] = useState(0);
   const navigate = useNavigate();
 
-  const handleAddKing = () => {
-    navigate('register', {
-      state: { category: 'king' },
-    });
+  const handleAddQueen = () => {
+    setcreateModal({ visible: true });
   };
 
-  const handleAddQueen = () => {
-    navigate('register', {
-      state: { category: 'queen' },
-    });
+  const reFetchData = () => {
+    setreFetch((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    getAllContestants()
+      .then((data) => {
+        const queens = data.filter(
+          (contestant) => contestant.category === 'QUEEN'
+        );
+        setQueens(queens);
+      })
+      .catch((error) => {
+        console.log(error);
+        showMessage('ERROR', error.message);
+      });
+  }, [reFetch]);
 
   return (
     <Container
@@ -54,13 +84,13 @@ export function VotingRegistrationListView() {
         my: 2,
         px: 1,
         pb: 8,
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
       }}
     >
+      <Fab className="" onClick={handleAddQueen} variant="extended">
+        <AddIcon /> Add Queen
+      </Fab>
       {/* King Category */}
-      <Card sx={{ mb: 2, flex: 1 }}>
+      {/* <Card sx={{ mb: 2, flex: 1 }}>
         <CardContent
           sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
         >
@@ -91,7 +121,7 @@ export function VotingRegistrationListView() {
             ))}
           </List>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Queen Category */}
       <Card sx={{ mb: 2, flex: 1 }}>
@@ -116,7 +146,10 @@ export function VotingRegistrationListView() {
             {queens.map((queen) => (
               <ListItem key={queen.id}>
                 <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: 'secondary.main' }}>
+                  <Avatar
+                    src={queen.photoUrl}
+                    sx={{ bgcolor: 'secondary.main' }}
+                  >
                     <Female />
                   </Avatar>
                 </ListItemAvatar>
@@ -128,34 +161,48 @@ export function VotingRegistrationListView() {
       </Card>
 
       {/* Add Buttons */}
-      <Box
-        sx={{
-          p: 1,
-          bgcolor: 'background.paper',
-          boxShadow: 3,
+
+      {/* Add Modal */}
+
+      <Dialog
+        open={createModal.visible}
+        onClose={() => {
+          setcreateModal({ visible: false });
         }}
+        style={{ width: '100%' }}
+        fullWidth
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
+        <DialogTitle id="alert-dialog-title">Add Contestant</DialogTitle>
+        <DialogContent>
+          <RegistrationCreateView
+            selfClose={() => {
+              setcreateModal({ visible: false });
+            }}
+            reFetchParentData={reFetchData}
+            reservedId={String(queens.length + 1)}
+          />
+        </DialogContent>
+        {/* <DialogActions>
           <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleAddKing}
-            color="primary"
-            fullWidth
+            endIcon={<CloseRounded />}
+            onClick={() => setcreateModal({ visible: false })}
+            autoFocus
           >
-            Add King
+            Close
           </Button>
           <Button
             variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleAddQueen}
-            color="secondary"
-            fullWidth
+            endIcon={<AddCircleOutline />}
+            // onClick={handleSubmit}
+            disabled={false}
+            autoFocus
           >
-            Add Queen
+            Check In
           </Button>
-        </Box>
-      </Box>
+        </DialogActions> */}
+      </Dialog>
     </Container>
   );
 }

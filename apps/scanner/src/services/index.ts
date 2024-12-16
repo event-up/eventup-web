@@ -1,10 +1,12 @@
 import {
+  addContestant,
   incrementCheckInCountRealtimeDB,
   saveParticipant,
   searchParticipantByRefId,
   updateDisplayParticipantRealtimeDB,
 } from '@eventup-web/shared';
 import { checkCheckPoints } from '../helpers/helpers';
+import { Contestant } from '@eventup-web/eventup-models';
 
 export const handleParticipantCheckIn = async (
   participantId: string,
@@ -44,4 +46,10 @@ export const handleParticipantCheckIn = async (
   updateDisplayParticipantRealtimeDB(participant);
 
   return participant;
+};
+
+export const handleCreateContestant = async (contestant: Contestant) => {
+  const res = await addContestant(contestant);
+
+  return res;
 };
