@@ -9,6 +9,7 @@ import { FunctionComponent, useEffect, useState } from 'react';
 import { ContestantCategoryContainer } from './Category';
 import { useLocation } from 'react-router-dom';
 import { useRootContext } from '../../../app/RootContext';
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface
 interface VoteContainerProps {}
 
 export type ContestantState = Contestant & { voted: boolean };
@@ -82,7 +83,7 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
 
       const res = await voteContestant(contestant.id, participantRefId);
       setreFetechData((prev) => prev + 1);
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
       showMessage('ERROR', e.message);
     }

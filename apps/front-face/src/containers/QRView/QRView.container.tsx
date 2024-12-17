@@ -7,6 +7,7 @@ import eventLogo from '../../assets/event_logo.png';
 import { Participant } from '@eventup-web/eventup-models';
 import {
   searchParticipantByRefId,
+  subscribeToCheckedInStatusInRealtimeDB,
   subscribeToVotingStatus,
 } from '@eventup-web/shared';
 import { useRootContext } from '../../app/RootContext';
@@ -35,6 +36,7 @@ export const QRViewContainer: FC<QRViewPageProps> = () => {
   const query = new URLSearchParams(search);
   const refId = query.get('refid');
   const [votingStatus, setvotingStatus] = useState(false);
+  const [isCheckedIn, setIsCheckedIn] = useState(false);
   const navigate = useNavigate();
 
   console.log({ refId });
@@ -67,11 +69,21 @@ export const QRViewContainer: FC<QRViewPageProps> = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!refId) return;
+    const unsub = subscribeToCheckedInStatusInRealtimeDB(refId, (status) => {
+      console.log('valueee', { status });
+      setIsCheckedIn(status);
+    });
+
+    return () => {
+      unsub();
+    };
+  }, []);
+
   const navigateToVoting = () => {
     navigate(`vote?refid=${refId}`);
   };
-
-  console.log({ participant });
 
   return (
     <div
@@ -101,7 +113,7 @@ export const QRViewContainer: FC<QRViewPageProps> = () => {
             </div>
           )}
 
-          {participant?.qrUrl && (
+          {participant?.qrUrl && !isCheckedIn && (
             <img
               alt="qr code"
               src={participant?.qrUrl}

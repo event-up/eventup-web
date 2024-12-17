@@ -31,7 +31,7 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
   const [loading, setloading] = useState(false);
 
   return (
-    <div className="p-2 shadow-xl flex flex-col justify-center w-[150px] items-center rounded-xl">
+    <div className="p-2 shadow-xl flex flex-col justify-center items-center rounded-xl">
       <Avatar
         sx={{ width: 100, height: 100 }}
         className="w-full"

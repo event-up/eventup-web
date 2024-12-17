@@ -112,7 +112,7 @@ export const voteContestant = async (
   await updateDoc(participantDocRef, { ...participant });
 
   // update the realtime ref
-  await incrementContestantVote(participantId);
+  await incrementContestantVote(contestantId);
 
   return true;
 };

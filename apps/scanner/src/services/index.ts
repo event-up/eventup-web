@@ -3,6 +3,7 @@ import {
   incrementCheckInCountRealtimeDB,
   saveParticipant,
   searchParticipantByRefId,
+  updateCheckedInStatusInRealtimeDB,
   updateDisplayParticipantRealtimeDB,
 } from '@eventup-web/shared';
 import { checkCheckPoints } from '../helpers/helpers';
@@ -44,6 +45,7 @@ export const handleParticipantCheckIn = async (
    * update the realtime db
    */
   updateDisplayParticipantRealtimeDB(participant);
+  updateCheckedInStatusInRealtimeDB(participant.ref_id);
 
   return participant;
 };
