@@ -7,9 +7,9 @@ export const withSuspense = (child: React.ReactElement) => {
       fallback={
         <div
           style={{ height: '100vh' }}
-          className=" flex justify-center align-center "
+          className=" flex justify-center items-center "
         >
-          <CircularProgress color="primary" />
+          <CircularProgress size={70} color="primary" />
         </div>
       }
     >

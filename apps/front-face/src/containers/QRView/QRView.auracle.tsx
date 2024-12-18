@@ -50,7 +50,9 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
     searchParticipantByRefId(refId?.toString())
       .then((participant) => {
         setParticipant(participant);
-        setisloading(false);
+        setTimeout(() => {
+          setisloading(false);
+        }, 1000);
       })
       .catch((e) => {
         console.log({ e });
