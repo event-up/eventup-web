@@ -1,8 +1,16 @@
 import { Contestant } from '@eventup-web/eventup-models';
-import { Avatar, Button, LinearProgress } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  LinearProgress,
+  styled,
+  SwipeableDrawer,
+} from '@mui/material';
 import { FunctionComponent, useState } from 'react';
 import { ContestantState } from './Vote.container';
 import { Done, PlusOne } from '@mui/icons-material';
+import grey from '@mui/material/colors/grey';
+import { ContestantCard } from './VoteContestantCard';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface
 interface ContestantCategoryContainerProps {
@@ -14,9 +22,9 @@ export const ContestantCategoryContainer: FunctionComponent<
   ContestantCategoryContainerProps
 > = ({ contestants, onVote }) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 place-items-center p-2">
+    <div className="flex flex-wrap justify-evenly overflow-x-auto">
       {contestants.map((contestant) => (
-        <VoteCard contestant={contestant} onVote={onVote} />
+        <VoteCard key={contestant.id} contestant={contestant} onVote={onVote} />
       ))}
     </div>
   );
@@ -29,36 +37,112 @@ interface VoteCardProps {
 
 const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
   const [loading, setloading] = useState(false);
+  // Add state for drawer
+  const [drawerState, setDrawerState] = useState<{
+    bottom: boolean;
+  }>({
+    bottom: false,
+  });
+
+  const Puller = styled('div')(({ theme }) => ({
+    width: 30,
+    height: 6,
+    backgroundColor: grey[300],
+    borderRadius: 3,
+    position: 'absolute',
+    top: 8,
+    left: 'calc(50% - 15px)',
+    ...theme.applyStyles('dark', {
+      backgroundColor: grey[900],
+    }),
+  }));
+
+  // Toggle drawer function
+  const toggleDrawer = (open: boolean) => () => {
+    setDrawerState({ bottom: open });
+  };
 
   return (
-    <div className="p-2 shadow-xl flex flex-col justify-center items-center rounded-xl">
-      <Avatar
-        sx={{ width: 100, height: 100 }}
-        className="w-full"
-        src={contestant.photoUrl}
-        alt={contestant.name}
-      />
-      <div className="pt-1 text-gray-500">#{contestant.id}</div>
-      <div className="font-bold text-xl pb-2">{contestant.name}</div>
-      <Button
-        disabled={contestant.voted}
-        onClick={() => {
-          setloading(true);
-          onVote(contestant).finally(() => {
-            setloading(false);
-          });
+    <>
+      {/* <div
+        className="shadow-[0_0_15px_rgba(217,119,6,0.15)] hover:shadow-[0_0_25px_rgba(217,119,6,0.25)] 
+                    flex flex-col justify-center items-center w-2/5 h-2/5 my-4 mx-2 
+                    rounded-3xl bg-yellow-950 bg-opacity-95 flex-shrink-0
+                    transition-all duration-300 ease-in-out"
+        onClick={toggleDrawer(true)} // Add click handler to open drawer
+      > */}
+      <ContestantCard onClick={toggleDrawer(true)}>
+        <Avatar
+          sx={{ width: 100, height: 100 }}
+          className="w-full"
+          src={contestant.photoUrl}
+          alt={contestant.name}
+        />
+        <div className="pt-1 text-gray-500">#{contestant.id}</div>
+        <div className="font-bold text-xl pb-2">{contestant.name}</div>
+      </ContestantCard>
+      {/* </div> */}
+      <SwipeableDrawer
+        anchor="bottom"
+        open={drawerState.bottom}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
+        swipeAreaWidth={80}
+        ModalProps={{
+          keepMounted: true,
         }}
-        startIcon={contestant.voted ? <Done /> : <PlusOne />}
       >
-        {contestant.voted ? 'Voted' : 'Vote'}
-      </Button>
-      {loading && (
-        <div className="w-full">
-          <LinearProgress />
+        <Puller />
+        <div className="p-4 bg-orange-950 min-h-[500px]">
+          {/* Drawer Content */}
+          <div className="flex items-center gap-4 mb-4">
+            <Avatar
+              sx={{ width: 150, height: 150 }}
+              src={contestant.photoUrl}
+              alt={contestant.name}
+            />
+            <div>
+              <div className="text-xl font-bold">{contestant.name}</div>
+              <div className="text-gray-500">#{contestant.id}</div>
+            </div>
+          </div>
+          <Button
+            disabled={contestant.voted}
+            onClick={() => {
+              setloading(true);
+              onVote(contestant).finally(() => {
+                setloading(false);
+              });
+            }}
+            startIcon={contestant.voted ? <Done /> : <PlusOne />}
+            sx={{
+              backgroundColor: 'rgb(255, 237, 213)',
+              color: 'rgb(234, 88, 12)',
+              borderRadius: '24px 24px 24px 24px',
+              padding: '24px',
+              margin: '10px',
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: 'rgb(255, 247, 237)',
+              },
+              '&:disabled': {
+                backgroundColor: 'rgb(255, 237, 213, 0.5)',
+                color: 'rgb(234, 88, 12, 0.5)',
+              },
+            }}
+          >
+            {contestant.voted ? 'Voted' : 'Vote'}
+          </Button>
+          {loading && (
+            <div className="w-full">
+              <LinearProgress />
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </SwipeableDrawer>
+    </>
   );
 };
 
 export default VoteCard;
+//relative drop-shadow-xl w-48 h-64 overflow-hidden rounded-xl bg-[#3d3c3d]
