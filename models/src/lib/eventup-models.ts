@@ -17,6 +17,8 @@ export interface Participant {
     timestamp: string;
   }[];
 
+  drinksPref: string;
+  tableNo: string;
   //todo deactivate
   food_pref: string;
 }

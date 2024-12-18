@@ -1,0 +1,45 @@
+/*
+ * Replace this with your own classes
+ *
+ * e.g.
+ * .container {
+ * }
+*/
+
+button{
+  background-color: #dbad45 !important;
+  font-family: CinzelDecorative !important;
+  font-weight: bold !important;
+  color: black !important;
+  font-size:1.2rem !important;
+  border-radius: 50px !important;
+  padding: 10px !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+button:disabled{
+  background-color: #d1c099 !important ;
+  color: rgb(49, 48, 48) !important;
+
+}
+
+
+.corder-borders {
+  --s: 25px; /* the size on the corner */
+  --t: 5px;  /* the thickness of the border */
+  --g: 20px; /* the gap between the border and image */
+  
+  padding: calc(var(--g) + var(--t));
+  border-radius: 10px;
+  outline: var(--t) solid #dbad45; /* the color here */
+  outline-offset: calc(-1*var(--t));
+  mask:
+    conic-gradient(at var(--s) var(--s),#0000 75%,#000 0)
+    0 0/calc(100% - var(--s)) calc(100% - var(--s)),
+    linear-gradient(#000 0 0) content-box;
+  transition: .4s;
+}
+img:hover {
+  outline-offset: calc(var(--g)/-1);
+}

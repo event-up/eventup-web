@@ -7,116 +7,58 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Snackbar,
   TextField,
 } from '@mui/material';
-import { ref, runTransaction, set } from 'firebase/database';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Participant } from '@eventup-web/eventup-models';
 import { useState } from 'react';
 import InfoCard from '../../components/InfoCard/InfoCard';
-import { checkCheckPoints } from '../../helpers/helpers';
-import { AppCamera, db, fs } from '@eventup-web/shared';
+import { searchParticipantByRefId } from '@eventup-web/shared';
+import { handleParticipantCheckIn } from '../../services';
+import { useRootContext } from '../../app/RootContext';
 
-export function ReferenceContainer(checkPoint: string) {
+export function ReferenceContainer({ checkPoint }: { checkPoint: string }) {
   const [inputval, setInputVal] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [participant, setParticipant] = useState<Participant | undefined>();
   const [isLoading, setIsLoading] = useState(false);
-  const [response, setResponse] = useState<{
-    status: 'DONE' | 'ERROR' | 'WARN';
-    msg: string;
-  }>();
+  const { showMessage } = useRootContext();
 
   const handleSubmit = async () => {
-    const realtimeDisplayParticipantRef = ref(db, 'displayParticipant');
-    const realtimeParticipantsRef = ref(db, 'checkInCount');
-
     try {
       setIsLoading(true);
       if (!inputval) return;
 
-      const docref = doc(fs, 'participants', inputval);
+      const updatedParticipant = await handleParticipantCheckIn(
+        inputval,
+        checkPoint
+      );
 
-      const snap = await getDoc(docref);
-
-      if (!snap.exists()) {
-        console.log("can't fined the participant");
-        setResponse({ status: 'ERROR', msg: 'Invalid Ref code' });
-
-        return;
-      }
-      const person = snap.data() as Participant;
-      person.checkIns.push({
-        checkedInTime: new Date().toISOString(),
-        checkpointCode: checkPoint,
-        isChecked: true,
-      });
-      await updateDoc(docref, { checkIns: person.checkIns });
-
-      // Increment the Check-in Count
-      await runTransaction(realtimeParticipantsRef, (data) => {
-        console.log('data', { data });
-        if (data !== undefined) {
-          // Increment the Check-in Count
-
-          data++;
-        }
-        return data;
-      });
-
-      // Update for Display
-      await runTransaction(realtimeDisplayParticipantRef, (data) => {
-        console.log('data display participant', { data });
-        if (!data) {
-          set(realtimeDisplayParticipantRef, person);
-        }
-
-        return data;
-      });
-
-      setIsLoading(false);
-
+      showMessage('SUCCESS', 'Successfully Checked In');
       setInputVal('');
+      setIsLoading(false);
       setShowModal(false);
-      setResponse({ status: 'DONE', msg: 'Successfully Checked In' });
-    } catch (error) {
-      setResponse({ status: 'ERROR', msg: 'Something went wrong!' });
+    } catch (error: any) {
+      setIsLoading(false);
+      showMessage('ERROR', error.message);
     }
   };
 
   const getDetails = async () => {
-    if (!inputval) return;
+    try {
+      if (!inputval) return;
 
-    const docref = doc(fs, 'participants', inputval);
+      const updatedParticipant = await searchParticipantByRefId(inputval);
 
-    const snap = await getDoc(docref);
+      setParticipant({
+        ...updatedParticipant,
+      } as Participant);
 
-    if (!snap.exists()) {
-      console.log("can't fined the participant");
-      setResponse({ status: 'ERROR', msg: 'Invalid Ref code' });
-
-      return;
+      setShowModal(true);
+    } catch (e: any) {
+      console.log({ e });
+      showMessage('ERROR', e.message);
     }
-    const data = snap.data() as Participant;
-    if (checkCheckPoints(checkPoint, data)) {
-      setResponse({ status: 'ERROR', msg: 'Already Checked In' });
-      return;
-    }
-    setParticipant({
-      ...data,
-      // spouse: YesNoToBoolean(data.spouse as any),
-      // children: data.children.filter((d) => d.name !== ''),
-    } as Participant);
-
-    setShowModal(true);
   };
-
-  //   useEffect(() => {
-  //     setTimeout(() => {
-  //       setResponse(undefined);
-  //     }, 3000);
-  //   }, [response]);
 
   return (
     <div className={styles['container']}>
@@ -131,35 +73,6 @@ export function ReferenceContainer(checkPoint: string) {
         }}
       >
         <div
-          style={{
-            // margin: "10px",
-            display: 'flex',
-            justifyContent: 'center',
-            alignContent: 'center',
-          }}
-        >
-          <Snackbar
-            open={response !== undefined}
-            anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
-            autoHideDuration={1500}
-            onClose={() => setResponse(undefined)}
-            style={{ bottom: '10vh' }}
-          >
-            <Alert
-              severity={
-                response?.status === 'DONE'
-                  ? 'success'
-                  : response?.status === 'ERROR'
-                  ? 'error'
-                  : 'warning'
-              }
-              sx={{ width: '100%' }}
-            >
-              {response?.msg}
-            </Alert>
-          </Snackbar>
-        </div>
-        {/* <div
           style={{
             display: 'flex',
             alignContent: 'center',
@@ -192,15 +105,8 @@ export function ReferenceContainer(checkPoint: string) {
             >
               Search
             </Button>
-
-           
           </div>
-        </div> */}
-        <AppCamera
-          onImageCapture={() => {
-            console.log('capt');
-          }}
-        />
+        </div>
         <Dialog
           open={showModal}
           onClose={() => {

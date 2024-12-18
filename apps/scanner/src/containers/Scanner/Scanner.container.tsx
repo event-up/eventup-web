@@ -16,7 +16,11 @@ import { Participant } from '@eventup-web/eventup-models';
 import { handleParticipantCheckIn } from '../../services';
 import { useRootContext } from '../../app/RootContext';
 
-export function ScannerContainer(checkPointCode: string) {
+export function ScannerContainer({
+  checkPointCode,
+}: {
+  checkPointCode: string;
+}) {
   const { showMessage } = useRootContext();
   const [qrText, setQRText] = useState<string | undefined>();
   const [scannedPerson, setScannedPerson] = useState<Participant | undefined>();

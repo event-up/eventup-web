@@ -23,9 +23,12 @@ import { checkCheckPoints } from '../../helpers/helpers';
 import InfoCard from '../../components/InfoCard/InfoCard';
 import { Participant } from '@eventup-web/eventup-models';
 import { db, fs } from '@eventup-web/shared';
+import { handleParticipantCheckIn } from '../../services';
+import { useRootContext } from '../../app/RootContext';
 
-export function ContactContainer(checkPoint: string) {
+export function ContactContainer({ checkPoint }: { checkPoint: string }) {
   const [inputval, setInputVal] = useState<string>('');
+  const { showMessage } = useRootContext();
   const [participantsList, setParticipantsList] = useState<Participant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState<{
@@ -58,63 +61,21 @@ export function ContactContainer(checkPoint: string) {
   };
 
   const handleCheckIn = async (participant: Participant) => {
-    const realtimeDisplayParticipantRef = ref(db, 'displayParticipant');
-    const realtimeParticipantsRef = ref(db, 'checkInCount');
-
     try {
       setIsLoading(true);
       if (!inputval) return;
 
-      const docref = doc(fs, 'participants', participant.ref_id);
-
-      const snap = await getDoc(docref);
-
-      if (!snap.exists()) {
-        console.log("can't fined the participant ");
-        // setResponse({ status: "ERROR", msg: "Invalid Ref code" });
-
-        return;
-      }
-      const person = snap.data() as Participant;
-      person.checkIns.push({
-        checkedInTime: new Date().toISOString(),
-        checkpointCode: checkPoint,
-        isChecked: true,
-      });
-
-      await updateDoc(docref, { checkIns: person.checkIns });
-
-      // Increment the Check-in Count
-      await runTransaction(realtimeParticipantsRef, (data) => {
-        console.log('data', { data });
-        if (data !== undefined) {
-          // Increment the Check-in Count
-
-          data++;
-        }
-        return data;
-      });
-
-      // Update for Display
-      await runTransaction(realtimeDisplayParticipantRef, (data) => {
-        console.log('data display participant', { data });
-        if (!data) {
-          set(realtimeDisplayParticipantRef, person);
-        }
-
-        return person;
-      });
+      const updatedParticipant = await handleParticipantCheckIn(
+        participant.ref_id,
+        checkPoint
+      );
 
       setIsLoading(false);
-
       setInputVal('');
       await queryFirestore();
-
-      //   setShowModal(false);
-      //   setResponse({ status: "DONE", msg: "Successfully Checked In" });
-    } catch (error) {
-      console.log(error);
-
+    } catch (error: any) {
+      console.log({ error });
+      showMessage('ERROR', error.message);
       //   setResponse({ status: "ERROR", msg: "Something went wrong!" });
     }
   };
@@ -132,26 +93,6 @@ export function ContactContainer(checkPoint: string) {
             paddingTop: '15px',
           }}
         >
-          <Snackbar
-            open={response !== undefined}
-            anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
-            autoHideDuration={1500}
-            onClose={() => setResponse(undefined)}
-            style={{ bottom: '10vh' }}
-          >
-            <Alert
-              severity={
-                response?.status === 'DONE'
-                  ? 'success'
-                  : response?.status === 'ERROR'
-                  ? 'error'
-                  : 'warning'
-              }
-              sx={{ width: '100%' }}
-            >
-              {response?.msg}
-            </Alert>
-          </Snackbar>
           <div>
             <div
               style={{

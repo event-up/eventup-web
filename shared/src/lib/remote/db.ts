@@ -96,14 +96,14 @@ export const voteContestant = async (
     throw new Error('Participant not found');
   }
 
+  if (participant.votes && participant.votes.length >= 3) {
+    throw new Error('You only can vote upto 3 contestants');
+  }
+
   const contestant = await getContestant(contestantId);
   const contestantDocRef = await getContestantDocRef(contestantId);
   if (!contestant) {
     throw new Error('Contestant not found');
-  }
-
-  if (participant.votes && participant.votes.length >= 3) {
-    throw new Error('Participant has already voted 3 times');
   }
 
   participant.votes.push({ contestantId, timestamp: new Date().toISOString() });
@@ -112,7 +112,7 @@ export const voteContestant = async (
   await updateDoc(participantDocRef, { ...participant });
 
   // update the realtime ref
-  await incrementContestantVote(participantId);
+  await incrementContestantVote(contestantId);
 
   return true;
 };

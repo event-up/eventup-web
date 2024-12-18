@@ -1,4 +1,4 @@
-import { onValue, ref, set } from 'firebase/database';
+import { off, onValue, ref, set } from 'firebase/database';
 import { db } from './configs';
 import { runTransaction } from 'firebase/database';
 import { Participant } from '@eventup-web/eventup-models';
@@ -6,6 +6,8 @@ import { Participant } from '@eventup-web/eventup-models';
 const realtimeCheckInCountRef = ref(db, 'checkInCount');
 const realtimeDisplayParticipantRef = ref(db, 'displayParticipant');
 const CONTESTANTS_COLLECTION = 'contestants';
+const PARTICIPANT_COLLECTION = 'participants';
+const CONFIG_VOTING_STATUS = 'configs/votingStatus';
 
 export const incrementCheckInCountRealtimeDB = async () => {
   /**
@@ -53,6 +55,35 @@ export const incrementContestantVote = async (contestantId: string) => {
   });
 };
 
+export const toggleVotingStatus = async (status: boolean) => {
+  const votingStatusRef = ref(db, CONFIG_VOTING_STATUS);
+  return await runTransaction(votingStatusRef, (data) => {
+    data = status;
+
+    return data;
+  });
+};
+
+export const subscribeToAllVoteCountUpdates = (
+  cb: (data: { [key: string]: number }) => void
+) => {
+  const contestantsRef = ref(db, CONTESTANTS_COLLECTION);
+  return onValue(contestantsRef, (snapshot) => {
+    console.log(snapshot.val());
+    cb(snapshot.val());
+  });
+};
+
+/**
+ * Voting Flag
+ */
+export const subscribeToVotingStatus = (cb: (data: boolean) => void) => {
+  const votingStatusRef = ref(db, CONFIG_VOTING_STATUS);
+  return onValue(votingStatusRef, (snapshot) => {
+    cb(snapshot.val());
+  });
+};
+
 export const subscribeToContestantVote = (
   contestantId: string,
   cb: (data: number) => void
@@ -62,5 +93,32 @@ export const subscribeToContestantVote = (
     if (snapshot.val()) {
       cb(snapshot.val());
     }
+  });
+};
+
+export const updateCheckedInStatusInRealtimeDB = async (
+  participantId: string
+) => {
+  const participantRef = ref(
+    db,
+    `${PARTICIPANT_COLLECTION}/${participantId}/checkedIn`
+  );
+  return await runTransaction(participantRef, (data) => {
+    data = true;
+
+    return data;
+  });
+};
+
+export const subscribeToCheckedInStatusInRealtimeDB = (
+  participantID: string,
+  cb: (checkedIn: boolean) => void
+) => {
+  const participantRef = ref(
+    db,
+    `${PARTICIPANT_COLLECTION}/${participantID}/checkedIn`
+  );
+  return onValue(participantRef, (snapshot) => {
+    cb(snapshot.val());
   });
 };
