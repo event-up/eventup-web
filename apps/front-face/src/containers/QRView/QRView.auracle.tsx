@@ -94,11 +94,11 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
       style={{
         width: '100%',
         height: '100vh',
-        minHeight: '670px',
+        minHeight: '760px',
         // maxWidth: '690px',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="font-[CinzelDecorative] flex flex-row justify-center   bg-cover text-white "
+      className="font-[CinzelDecorative] flex flex-col justify-center items-center   bg-cover text-white "
     >
       <div
         // style={{ backgroundImage: `url(${coverImg})` }}
