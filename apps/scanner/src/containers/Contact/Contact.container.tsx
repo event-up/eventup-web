@@ -31,10 +31,7 @@ export function ContactContainer({ checkPoint }: { checkPoint: string }) {
   const { showMessage } = useRootContext();
   const [participantsList, setParticipantsList] = useState<Participant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [response, setResponse] = useState<{
-    status: 'DONE' | 'ERROR' | 'WARN';
-    msg: string;
-  }>();
+
   const participantsRef = collection(fs, 'participants');
 
   const queryFirestore = async () => {
@@ -44,6 +41,7 @@ export function ContactContainer({ checkPoint }: { checkPoint: string }) {
       participantsRef,
       where('mobileNo', 'array-contains', '94' + inputval)
     );
+
     const querySnapShot = await getDocs(q);
     const pl = querySnapShot.docs.map((o) => {
       const data = o.data() as Participant;
@@ -54,16 +52,15 @@ export function ContactContainer({ checkPoint }: { checkPoint: string }) {
       };
     });
     console.log({ pl });
-    if (pl.length === 0) {
-      setResponse({ status: 'WARN', msg: 'No records found' });
-    }
     setParticipantsList(pl);
+    if (pl.length === 0) {
+      showMessage('ERROR', 'No participant found');
+    }
   };
 
   const handleCheckIn = async (participant: Participant) => {
     try {
       setIsLoading(true);
-      if (!inputval) return;
 
       const updatedParticipant = await handleParticipantCheckIn(
         participant.ref_id,
@@ -127,11 +124,10 @@ export function ContactContainer({ checkPoint }: { checkPoint: string }) {
               {participantsList.map((participant) => (
                 <div style={{ marginBottom: '5px' }}>
                   <InfoCard
-                    childrenCount={0}
-                    spouse={false}
                     email={participant.email}
                     isOk={false}
                     name={participant.employee_name}
+                    tableNo={participant.table_no}
                     refId={participant.ref_id}
                   >
                     {!checkCheckPoints(checkPoint, participant) && (

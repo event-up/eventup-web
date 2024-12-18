@@ -7,9 +7,8 @@ interface InfoCardProps {
   email: string;
   refId: string;
   isOk: boolean;
-  spouse: boolean;
+  tableNo: string;
   children?: React.ReactNode;
-  childrenCount: number;
 }
 
 const InfoCard: FC<InfoCardProps> = ({
@@ -18,8 +17,7 @@ const InfoCard: FC<InfoCardProps> = ({
   refId,
   isOk,
   children,
-  spouse,
-  childrenCount,
+  tableNo,
 }) => {
   return (
     <Card elevation={2}>
@@ -33,13 +31,8 @@ const InfoCard: FC<InfoCardProps> = ({
           {name}
         </Typography>
         <Typography sx={{ mb: 0.2 }}>{email}</Typography>
-        <Typography sx={{ mb: 0.2 }}>
-          Spouse attending:{' '}
-          <Tag type={BooleanToYesNo(spouse)}> {BooleanToYesNo(spouse)}</Tag>
-        </Typography>
-        <Typography sx={{ mb: 0.2 }}>
-          Kids Count: <Tag type="No">{childrenCount}</Tag>
-        </Typography>
+        <Typography sx={{ mb: 0.2 }}>Email: {email}</Typography>
+        <Typography sx={{ mb: 0.2 }}>Table/Zone : {}</Typography>
         <CardActions>{children}</CardActions>
       </CardContent>
     </Card>
