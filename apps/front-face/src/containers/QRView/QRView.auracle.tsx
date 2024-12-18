@@ -98,8 +98,21 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
         // maxWidth: '690px',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="font-[CinzelDecorative] flex flex-col justify-center items-center   bg-cover text-white "
+      className="font-[CinzelDecorative] flex flex-col justify-between items-center   bg-cover text-white "
     >
+      <div className=" flex justify-center w-full  pb-2  items-center  ">
+        <div
+          style={{ backgroundColor: '#d7d6d6c7' }}
+          className=" bg-black   p-2  rounded-b-xl flex justify-center "
+        >
+          {/* <img src={organizerLogo} alt="LOLC Technologies" className="w-24" /> */}
+          <div className=" text-xs pr-1 text-black align-middle flex flex-col justify-center  ">
+            <div>customized by</div>
+          </div>
+          <img width={70} src={eventuplogo} alt="" />
+        </div>
+      </div>
+
       <div
         // style={{ backgroundImage: `url(${coverImg})` }}
         className="flex flex-col max-w-[590px]   object-top  text-center justify-center "
@@ -118,8 +131,8 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
 
         {<img height={300} src={eventLogo} alt="Event Logo" />}
         {/* <div className="text-sm pb-8 font-bold shadow-lg text-yellow-50">
-          THE AURA OF MAGIC, THE ORACLE OF MOMENTS
-        </div> */}
+            THE AURA OF MAGIC, THE ORACLE OF MOMENTS
+          </div> */}
         <img
           height={300}
           src={eventTagline}
@@ -129,7 +142,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
 
         {!isCheckedIn && (
           <div className="flex justify-center         rounded-lg shadow-lg   ">
-            <div className="flex justify-center    ">
+            <div className="flex justify-center  ">
               <img
                 className="border  border-eventPrimary rounded-3xl "
                 width={'70%'}
@@ -160,36 +173,29 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
           </>
         )}
 
-        <div className="pt-9">
-          <Button
-            disabled={!votingStatus}
-            className="font-[CinzelDecorative] "
-            onClick={navigateToVoting}
-          >
-            VOTE FOR AURA QUEEN
-          </Button>
-          <div hidden={votingStatus} className="text-sm pt-1">
-            <InfoRounded /> Voting not started yet
+        {isCheckedIn && (
+          <div className="pt-9">
+            <Button
+              disabled={!votingStatus}
+              className="font-[CinzelDecorative] "
+              onClick={navigateToVoting}
+            >
+              VOTE FOR AURA QUEEN
+            </Button>
+            <div hidden={votingStatus} className="text-sm pt-1">
+              <InfoRounded /> Voting not started yet
+            </div>
           </div>
-        </div>
+        )}
       </div>
-      <div className=" fixed flex justify-center w-full  bottom-0  items-center  ">
-        <div className=" bg-white p-4 w-[40%] rounded-t-xl flex justify-center">
-          <img src={organizerLogo} alt="LOLC Technologies" className="w-24" />
+      <div className="flex justify-center w-full   items-center  ">
+        <div className=" bg-white p-4 w-[200px] rounded-t-xl flex justify-center">
+          <img
+            src={organizerLogo}
+            alt="LOLC Technologies"
+            className="w-[100px]"
+          />
           {/* <img src={eventuplogo} alt="" /> */}
-        </div>
-      </div>
-
-      <div className=" fixed flex justify-center w-full  top-0  items-center  ">
-        <div
-          style={{ backgroundColor: '#d7d6d6c7' }}
-          className=" bg-black   p-2  rounded-b-xl flex justify-center "
-        >
-          {/* <img src={organizerLogo} alt="LOLC Technologies" className="w-24" /> */}
-          <div className=" text-xs pr-1 text-black align-middle flex flex-col justify-center  ">
-            <div>customized by</div>
-          </div>
-          <img width={70} src={eventuplogo} alt="" />
         </div>
       </div>
     </div>
