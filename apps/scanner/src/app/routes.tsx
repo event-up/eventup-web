@@ -1,13 +1,35 @@
-import { FunctionComponent } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { FunctionComponent, useEffect, useState } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import ScannerPage from '../pages/CheckerPage/CheckerPage';
 import ContestsPage from '../pages/Contests/ContestsPage';
+import { Button, Tab, Tabs } from '@mui/material';
 
 export const RootRoutes: FunctionComponent = () => {
+  const nav = useNavigate();
+  const [tab, settab] = useState('checker/scanner');
+
+  useEffect(() => {
+    nav('checker/scanner');
+  }, []);
   return (
-    <Routes>
-      <Route path="/checker/*" element={<ScannerPage />}></Route>
-      <Route path="/contests/*" element={<ContestsPage />}></Route>
-    </Routes>
+    <div>
+      <div className="flex flex-row justify-center">
+        <Tabs
+          value={tab}
+          onChange={(e, value) => {
+            console.log({ value });
+            settab(value);
+            nav(value);
+          }}
+        >
+          <Tab value={'checker/scanner'} label="Checker" />
+          <Tab value={'event/contestants'} label="Event Management" />
+        </Tabs>
+      </div>
+      <Routes>
+        <Route path="/checker/*" element={<ScannerPage />}></Route>
+        <Route path="/event/*" element={<ContestsPage />}></Route>
+      </Routes>
+    </div>
   );
 };
