@@ -22,7 +22,7 @@ export const ContestantCategoryContainer: FunctionComponent<
   ContestantCategoryContainerProps
 > = ({ contestants, onVote }) => {
   return (
-    <div className="flex flex-wrap justify-evenly overflow-x-auto">
+    <div className="flex flex-wrap justify-evenly  overflow-x-auto">
       {contestants.map((contestant) => (
         <VoteCard key={contestant.id} contestant={contestant} onVote={onVote} />
       ))}
@@ -78,7 +78,7 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
           src={contestant.photoUrl}
           alt={contestant.name}
         />
-        <div className="pt-1 text-gray-500">#{contestant.id}</div>
+        <div className="pt-1 text-2xl text-eventPrimary">#{contestant.id}</div>
         <div className="font-bold text-xl pb-2">{contestant.name}</div>
       </ContestantCard>
       {/* </div> */}
@@ -93,9 +93,9 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
         }}
       >
         <Puller />
-        <div className="p-4 bg-orange-950 min-h-[500px]">
+        <div className="p-4 bg-black min-h-[500px]">
           {/* Drawer Content */}
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex flex-col items-center  mb-4">
             <Avatar
               sx={{ width: 150, height: 150 }}
               src={contestant.photoUrl}

@@ -11,6 +11,7 @@ import { useLocation } from 'react-router-dom';
 import { useRootContext } from '../../../app/RootContext';
 import coverImg from '../../../assets/background_auracle.jpg';
 import eventLogo from '../../../assets/event_logo.png';
+import { Info, InfoRounded } from '@mui/icons-material';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface
 interface VoteContainerProps {}
@@ -165,6 +166,15 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
         alt="Event Logo"
         className="mb-8 px-8"
       />
+
+      <div className="text-center bg-black bg-opacity-50 p-2 rounded-lg">
+        <div>
+          <InfoRounded /> You can vote up to 3 contestants.
+        </div>
+        <div>
+          <InfoRounded /> Casted votes can not be undone
+        </div>
+      </div>
       <div className="h-[100px]"></div>
       {Object.keys(contestants || {}).map((category) => (
         <ContestantCategoryContainer
