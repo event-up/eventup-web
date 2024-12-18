@@ -30,6 +30,7 @@ export interface Contestant {
   name: string;
   photoUrl: string;
   id: string;
+  votes: number;
   voteCount: number;
   category: contestantCategoriesType;
 }

@@ -1,0 +1,24 @@
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 0, 1);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+  }
+}
+
+.glow {
+  animation: glow 2s infinite;
+}
+.glow-effect {
+  position: absolute;
+  width: 14rem; /* w-56 */
+  height: 12rem; /* h-48 */
+  background-color: #facc15; /* bg-yellow-400 */
+  filter: blur(50px); /* blur-[50px] */
+  left: -50%; /* -left-1/2 */
+  top: -50%; /* -top-1/2 */
+}
