@@ -100,7 +100,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
         // maxWidth: '690px',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="pt-[50px] font-[CinzelDecorative] flex flex-col justify-between items-center   bg-cover text-white "
+      className="pt-2 font-[CinzelDecorative] flex flex-col justify-between items-center   bg-cover text-white "
     >
       {isloading && (
         <div className="absolute w-full h-full bg-[#ffffffd1]  top-0 z-50 flex justify-center items-center">
