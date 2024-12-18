@@ -142,9 +142,15 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
 
         {isCheckedIn && (
           <>
-            <div className="pb-4">
-              <div>ENJOY YOUR</div>
-              <div>{participant?.drink_pref || 'VODKA'}</div>
+            <div className="pb-4 text-xl">
+              {participant?.drink_pref !== 'Non Alcoholic' ? (
+                <>
+                  <div>ENJOY YOUR</div>
+                  <div>{participant?.drink_pref}</div>
+                </>
+              ) : (
+                <div>ENJOY THE EVENT</div>
+              )}
             </div>
 
             <div>
