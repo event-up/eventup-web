@@ -30,10 +30,53 @@ const eventTable = [
     value: '13th October ',
   },
 ];
+
+const participant2 = {
+  votes: [
+    {
+      contestantId: '2',
+      timestamp: '2024-12-18T14:18:32.918Z',
+    },
+    {
+      contestantId: '1',
+      timestamp: '2024-12-18T14:18:45.912Z',
+    },
+    {
+      timestamp: '2024-12-18T14:19:41.041Z',
+      contestantId: '3',
+    },
+  ],
+  email: 'seniyas@lolctech.com',
+  checkIns: [
+    {
+      checkpointCode: 'MAIN',
+      checkedInTime: '2024-12-18T13:30:28.876Z',
+      isChecked: true,
+    },
+  ],
+  isCheckedIn: 'N',
+  mobileNo: ['94775444169'],
+  first_name: 'Seniya',
+  smsLogs: [
+    {
+      smsSent: 'Y',
+      number: '94775444169',
+    },
+  ],
+  ref_id: 'VK24NWZM',
+  table_no: '10.0',
+  qrUrl:
+    'https://storage.googleapis.com/party-qr-kiddies.appspot.com/qrs/VK24NWZM.png',
+  last_name: 'Dissanayake',
+  isWinner: false,
+  drink_pref: 'Vodka',
+  givenMobileNo: '775444169.0',
+  employee_name: 'Seniya Dissanayake',
+};
 export const QRViewAuracle: FC<QRViewPageProps> = () => {
   const { search } = useLocation();
   const { showMessage } = useRootContext();
-  const [participant, setParticipant] = useState<Participant>();
+  const [participant, setParticipant] = useState<Participant>(participant2);
   const query = new URLSearchParams(search);
   const refId = query.get('refid');
   const [isloading, setisloading] = useState(true);
@@ -45,19 +88,22 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
 
   useEffect(() => {
     if (!refId) return;
-    setisloading(true);
-    searchParticipantByRefId(refId?.toString())
-      .then((participant) => {
-        setParticipant(participant);
-        setTimeout(() => {
-          setisloading(false);
-        }, 1000);
-      })
-      .catch((e) => {
-        console.log({ e });
+    setisloading(false);
+    // setisloading(true);
+    // searchParticipantByRefId(refId?.toString())
+    //   .then((participant) => {
+    //     setParticipant(participant);
+    //     console.log({ participant });
 
-        showMessage('ERROR', e.message);
-      });
+    //     setTimeout(() => {
+    //       setisloading(false);
+    //     }, 1000);
+    //   })
+    //   .catch((e) => {
+    //     console.log({ e });
+
+    //     showMessage('ERROR', e.message);
+    //   });
   }, [refId]);
 
   /**
@@ -99,7 +145,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
         // maxWidth: '690px',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="pt-2 font-[CinzelDecorative] flex flex-col justify-between items-center   bg-cover text-white "
+      className="pt-[50px] font-[CinzelDecorative] flex flex-col  items-center   bg-cover text-white "
     >
       {isloading && (
         <div className="absolute w-full h-full bg-[#ffffffd1]  top-0 z-50 flex justify-center items-center">
@@ -120,7 +166,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
 
       <div
         // style={{ backgroundImage: `url(${coverImg})` }}
-        className="flex flex-col max-w-[590px]   object-top  text-center justify-center "
+        className="flex-1 flex-col max-w-[590px]   object-top  text-center justify-center "
       >
         <div className="text-2xl">
           <div className="pb-1">Hi {participant?.first_name},</div>
@@ -190,7 +236,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
           </div>
         )}
       </div>
-      <div className="flex justify-center w-full mt-3  items-center  ">
+      <div className="flex-auto flex flex-col justify-end  w-full mt-3   items-center  ">
         <div className=" bg-white p-4 w-[200px] rounded-t-xl flex justify-center">
           <img
             src={organizerLogo}
