@@ -13,7 +13,6 @@ import {
 import { useRootContext } from '../../app/RootContext';
 import { Button, CircularProgress } from '@mui/material';
 import { InfoRounded } from '@mui/icons-material';
-import { set } from 'firebase/database';
 
 interface QRViewPageProps {}
 
