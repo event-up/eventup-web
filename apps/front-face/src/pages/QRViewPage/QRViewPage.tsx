@@ -1,5 +1,4 @@
 import { FunctionComponent } from 'react';
-import { QRViewContainer } from '../../containers/QRView/QRView.container';
 import { QRViewAuracle } from '../../containers/QRView/QRView.auracle';
 
 interface QRViewPageProps {}

@@ -108,7 +108,7 @@ export const voteContestant = async (
 
   participant.votes.push({ contestantId, timestamp: new Date().toISOString() });
 
-  await updateDoc(contestantDocRef, { votes: increment(1) });
+  await updateDoc(contestantDocRef, { voteCount: increment(1) });
   await updateDoc(participantDocRef, { ...participant });
 
   // update the realtime ref

@@ -144,7 +144,11 @@ export function VotingRegistrationListView() {
           <Divider />
           <List sx={{ maxHeight: '100%', overflow: 'auto', flex: 1 }}>
             {queens.map((queen) => (
-              <ListItem key={queen.id}>
+              <ListItem
+                secondaryAction={<div>{queen.voteCount}</div>}
+                className=""
+                key={queen.id}
+              >
                 <ListItemAvatar>
                   <Avatar
                     src={queen.photoUrl}

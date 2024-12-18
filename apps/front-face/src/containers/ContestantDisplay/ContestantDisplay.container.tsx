@@ -122,5 +122,4 @@ const ContestantCard = ({
     </div>
   );
 };
-
 export default ContestantDisplayContainer;
