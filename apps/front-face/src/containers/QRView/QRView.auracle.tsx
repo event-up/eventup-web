@@ -155,11 +155,11 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
 
             <div>
               <div className="text-eventPrimary font-bold text-xl pb-2">
-                YOUR TABLE NO:
+                YOUR <br /> SEATING ZONE:
               </div>
               <div id="content" className="flex flex-row justify-center ">
-                <div className=" font-sans p-5 text-5xl text-eventPrimary font-bold   corder-borders">
-                  {Number(participant?.table_no) || '10'}
+                <div className="  p-5 text-4xl text-eventPrimary font-bold">
+                  {participant?.table_no}
                 </div>
               </div>
             </div>

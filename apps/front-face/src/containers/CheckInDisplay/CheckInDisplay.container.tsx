@@ -1,11 +1,11 @@
-import { off, onValue, ref } from 'firebase/database';
 import { FC, useEffect, useState } from 'react';
 
-import BackgroundImg from '../../assets/disco.jpg';
 import audio from '../../assets/checkin-sound.mp3';
-import RemovedBGLogo from '../../assets/removed_bg.png';
+import RemovedBGLogo from '../../assets/event_logo.png';
 import { Participant } from '@eventup-web/eventup-models';
-import { db } from '@eventup-web/shared';
+import coverImg from '../../assets/background_auracle.jpg';
+import './CheckInDisplay.container.scss';
+import { subscribeToDisplayParticipant } from '@eventup-web/shared';
 
 interface DisplayPageProps {}
 
@@ -17,28 +17,54 @@ const flushString = (str: string) => {
   return res;
 };
 
+const participant = {
+  checkIns: [
+    {
+      checkedInTime: '2024-12-18T18:41:27.846Z',
+      checkpointCode: 'MAIN',
+      isChecked: true,
+    },
+  ],
+  drink_pref: 'Vodka',
+  email: 'seniyas@lolctech.com',
+  employee_name: 'Seniya Dissanayake',
+  first_name: 'Seniya',
+  givenMobileNo: '775444169.0',
+  isCheckedIn: 'N',
+  isWinner: false,
+  last_name: 'Dissanayake',
+  mobileNo: ['94775444169'],
+  qrUrl:
+    'https://storage.googleapis.com/party-qr-kiddies.appspot.com/qrs/DMOJ2SVH.png',
+  ref_id: 'DMOJ2SVH',
+  smsLogs: [
+    {
+      number: '94775444169',
+      smsSent: 'Y',
+    },
+  ],
+  table_no: 'ROYAL_COURT',
+};
 export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
-  const [first, setFirst] = useState<Participant | undefined>();
+  const [first, setFirst] = useState<Participant | undefined>(participant);
 
   useEffect(() => {
     // Display based on realtime
-
-    const displayPersonRef = ref(db, 'displayParticipant');
-
-    onValue(displayPersonRef, (snapshot) => {
-      if (snapshot.val()) {
-        s.muted = false;
-        s.play();
-        setFirst({ ...(snapshot.val() as Participant) });
-        setTimeout(() => {
-          setFirst(undefined);
-        }, 3000);
-      }
-    });
-
-    return () => {
-      off(displayPersonRef);
-    };
+    // const unsub = subscribeToDisplayParticipant((participant) => {
+    //   if (participant) {
+    //     console.log({ participant });
+    //     s.muted = false;
+    //     s.play();
+    //     setFirst({ ...(participant as Participant) });
+    //     setTimeout(() => {
+    //       setFirst(undefined);
+    //     }, 3000);
+    //   }
+    // });
+    // return () => {
+    //   unsub();
+    //   // off(displayPersonRef);
+    // };
   }, []);
 
   const splitFirstName = (name: string) => {
@@ -59,24 +85,35 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
         overflowY: 'hidden',
         position: 'relative',
         flexDirection: 'column',
+        backgroundImage: `url(${coverImg})`,
       }}
-      className="bg-black relative"
+      className="bg-black relative font-[CinzelDecorative]"
     >
-      <img
+      {/* <img
         alt="background"
         style={{
           // height: "100vh",
-          bottom: 0,
+          // bottom: 0,
+          top: 0,
           // transform: " rotate(180deg)",
           position: 'absolute',
-          width: '100vw',
+          // width: '100vw',
+          height: '100vh',
           zIndex: '-1000',
         }}
         src={BackgroundImg}
-      />
+      /> */}
       <audio id="audioPlayer" src={audio}></audio>
+      {first && (
+        <div className="text-2xl text-white text-center">
+          <div className="pb-1">
+            Hi {flushString(splitFirstName(first.first_name))},
+          </div>
+          {participant && <div>WELCOME TO</div>}
+        </div>
+      )}
       <div
-        className="text-center absolute "
+        className="text-center  "
         style={{
           display: 'flex',
           justifyContent: 'center',
@@ -92,19 +129,19 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
             fontSize: 180,
             color: '#FFD700',
             width: '75vw',
-            fontFamily: 'MerryChristmasStar',
+            fontFamily: 'CinzelDecorative',
             letterSpacing: 2,
             marginTop: '0px',
           }}
         >
           <img src={RemovedBGLogo} alt="removed_bg_logo" />
         </div>
-        <div
+        {/* <div
           style={{ fontSize: 10, marginTop: '-20px' }}
           className="text-white italic  gold-color  "
         >
           LOLCTech Recreation Club Presents
-        </div>
+        </div> */}
       </div>
       {first ? (
         <div
@@ -117,36 +154,28 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
             // marginTop: "-250px",
           }}
         >
-          <div
-            style={{
-              fontSize: 30,
-              fontFamily: 'CinzelDecorative',
+          <div className="font-[CinzelDecorative]  text-white text-center">
+            <div className="text-[25px]  pb-12 ">
+              {first?.drink_pref !== 'Non Alcoholic' ? (
+                <>
+                  <div>ENJOY YOUR</div>
+                  <div>{first?.drink_pref}</div>
+                </>
+              ) : (
+                <div>ENJOY THE EVENT</div>
+              )}
+            </div>
 
-              // fontWeight: "bold",
-              paddingBottom: '50px',
-              color: 'white',
-              // letterSpacing: 2,
-              textAlign: 'center',
-            }}
-          >
-            Welcome!
-          </div>
-          <div
-            className="gold-color"
-            style={{
-              fontSize: 30,
-
-              maxWidth: '80vw',
-              // color: "#FFD700",
-              fontFamily: 'CinzelDecorative',
-              // letterSpacing: 2,
-              fontWeight: 'bold',
-              marginTop: '-40px',
-              lineHeight: '1.2',
-              textAlign: 'center',
-            }}
-          >
-            {flushString(splitFirstName(first.employee_name) || '  ')}
+            <div>
+              <div className="text-eventPrimary font-bold text-[25px] pb-2">
+                YOUR <br /> SEATING ZONE:
+              </div>
+              <div id="content" className="flex flex-row justify-center ">
+                <div className="  p-5 text-[40px] text-eventPrimary font-bold">
+                  {first?.table_no}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       ) : null}

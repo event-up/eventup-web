@@ -86,7 +86,12 @@ export function VotingRegistrationListView() {
         pb: 8,
       }}
     >
-      <Fab className="" onClick={handleAddQueen} variant="extended">
+      <Fab
+        color="primary"
+        className=""
+        onClick={handleAddQueen}
+        variant="extended"
+      >
         <AddIcon /> Add Queen
       </Fab>
       {/* King Category */}

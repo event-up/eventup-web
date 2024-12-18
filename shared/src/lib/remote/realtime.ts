@@ -131,3 +131,12 @@ export const subscribeToTotalCheckInCount = (
     cb(snapshot.val());
   });
 };
+
+export const subscribeToDisplayParticipant = (cb: (p: Participant) => void) => {
+  const displayParticipantRef = ref(db, 'displayParticipant');
+  return onValue(displayParticipantRef, (snapshot) => {
+    if (snapshot.val()) {
+      cb(snapshot.val() as Participant);
+    }
+  });
+};

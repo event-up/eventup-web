@@ -207,8 +207,8 @@ export function ScannerContainer({
             <div>
               <CheckCircleIcon sx={{ color: '#4cbb17', fontSize: 100 }} />
             </div>
-            <div style={{ fontSize: 20 }}>Checked In</div>
-            <div style={{ fontSize: 30 }}>
+            <div style={{ fontSize: 30 }}>Welcome! </div>
+            <div style={{ fontSize: 40 }}>
               {scannedPerson?.first_name + ' ' + scannedPerson?.last_name}
             </div>
             <ul style={{ fontSize: 30 }}></ul>
