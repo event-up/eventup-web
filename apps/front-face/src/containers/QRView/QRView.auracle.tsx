@@ -11,8 +11,9 @@ import {
   subscribeToVotingStatus,
 } from '@eventup-web/shared';
 import { useRootContext } from '../../app/RootContext';
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import { InfoRounded } from '@mui/icons-material';
+import { set } from 'firebase/database';
 
 interface QRViewPageProps {}
 
@@ -36,6 +37,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
   const [participant, setParticipant] = useState<Participant>();
   const query = new URLSearchParams(search);
   const refId = query.get('refid');
+  const [isloading, setisloading] = useState(true);
   const [votingStatus, setvotingStatus] = useState(false);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const navigate = useNavigate();
@@ -44,10 +46,11 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
 
   useEffect(() => {
     if (!refId) return;
-
+    setisloading(true);
     searchParticipantByRefId(refId?.toString())
       .then((participant) => {
         setParticipant(participant);
+        setisloading(false);
       })
       .catch((e) => {
         console.log({ e });
@@ -73,7 +76,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
   useEffect(() => {
     if (!refId) return;
     const unsub = subscribeToCheckedInStatusInRealtimeDB(refId, (status) => {
-      console.log('valueee', { status });
+      console.log('CheckedInStatusInRealtimeDB', { status });
       setIsCheckedIn(status);
     });
 
@@ -91,12 +94,17 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
       style={{
         width: '100%',
         height: '100vh',
-        minHeight: '760px',
+        minHeight: '660px',
         // maxWidth: '690px',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="pt-[100px] font-[CinzelDecorative] flex flex-col justify-between items-center   bg-cover text-white "
+      className="pt-[50px] font-[CinzelDecorative] flex flex-col justify-between items-center   bg-cover text-white "
     >
+      {isloading && (
+        <div className="absolute w-full h-full bg-[#ffffffd1]  top-0 z-50 flex justify-center items-center">
+          <CircularProgress size={70} />
+        </div>
+      )}
       {/* <div className=" flex justify-center w-full  pb-2  items-center  ">
         <div
           style={{ backgroundColor: '#d7d6d6c7' }}
@@ -125,7 +133,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
           )}
         </div>
 
-        {<img height={300} src={eventLogo} alt="Event Logo" />}
+        {<img height={300} src={eventLogo} alt="Event Logo" className="mb-8" />}
 
         {!isCheckedIn && (
           <div className="flex justify-center         rounded-lg shadow-lg   ">
