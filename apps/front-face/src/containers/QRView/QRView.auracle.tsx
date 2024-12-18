@@ -98,20 +98,19 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
         // maxWidth: '690px',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="font-[CinzelDecorative] flex flex-col justify-between items-center   bg-cover text-white "
+      className="pt-[100px] font-[CinzelDecorative] flex flex-col justify-between items-center   bg-cover text-white "
     >
-      <div className=" flex justify-center w-full  pb-2  items-center  ">
+      {/* <div className=" flex justify-center w-full  pb-2  items-center  ">
         <div
           style={{ backgroundColor: '#d7d6d6c7' }}
           className=" bg-black   p-2  rounded-b-xl flex justify-center "
         >
-          {/* <img src={organizerLogo} alt="LOLC Technologies" className="w-24" /> */}
           <div className=" text-xs pr-1 text-black align-middle flex flex-col justify-center  ">
             <div>customized by</div>
           </div>
           <img width={70} src={eventuplogo} alt="" />
         </div>
-      </div>
+      </div> */}
 
       <div
         // style={{ backgroundImage: `url(${coverImg})` }}
@@ -130,15 +129,6 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
         </div>
 
         {<img height={300} src={eventLogo} alt="Event Logo" />}
-        {/* <div className="text-sm pb-8 font-bold shadow-lg text-yellow-50">
-            THE AURA OF MAGIC, THE ORACLE OF MOMENTS
-          </div> */}
-        <img
-          height={300}
-          src={eventTagline}
-          alt="event tag line"
-          className="mt-[-20px]"
-        />
 
         {!isCheckedIn && (
           <div className="flex justify-center         rounded-lg shadow-lg   ">
@@ -188,7 +178,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
           </div>
         )}
       </div>
-      <div className="flex justify-center w-full   items-center  ">
+      <div className="flex justify-center w-full mt-3  items-center  ">
         <div className=" bg-white p-4 w-[200px] rounded-t-xl flex justify-center">
           <img
             src={organizerLogo}
