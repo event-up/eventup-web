@@ -4,6 +4,8 @@ export interface Participant {
   employee_name: string;
   email: string;
   first_name: string;
+  last_name: string;
+
   ref_id: string;
   smsLogs: { number: string; smsSent: 'Y' | 'N' }[];
   qrUrl: string;
@@ -17,8 +19,8 @@ export interface Participant {
     timestamp: string;
   }[];
 
-  drinksPref: string;
-  tableNo: string;
+  drink_pref: string;
+  table_no: string;
   //todo deactivate
   food_pref: string;
 }

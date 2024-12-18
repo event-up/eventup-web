@@ -1,12 +1,9 @@
-import { doc, getDoc } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import coverImg from '../../assets/background_auracle.jpg';
 import organizerLogo from '../../assets/organizer_logo.png';
 import eventLogo from '../../assets/event_logo.png';
-import eventTagline from '../../assets/event-tagline.png';
 import { Participant } from '@eventup-web/eventup-models';
-import eventuplogo from '../../assets/eventup.png';
 import './QRView.container.scss';
 import {
   searchParticipantByRefId,
@@ -147,7 +144,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
           <>
             <div className="pb-4">
               <div>ENJOY YOUR</div>
-              <div>{participant?.drinksPref || 'VODKA'}</div>
+              <div>{participant?.drink_pref || 'VODKA'}</div>
             </div>
 
             <div>
@@ -155,8 +152,8 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
                 YOUR TABLE NO:
               </div>
               <div id="content" className="flex flex-row justify-center ">
-                <div className="p-5 text-5xl text-eventPrimary font-bold   corder-borders">
-                  {participant?.tableNo || '05'}
+                <div className=" font-sans p-5 text-5xl text-eventPrimary font-bold   corder-borders">
+                  {Number(participant?.table_no) || '10'}
                 </div>
               </div>
             </div>
@@ -185,7 +182,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
             alt="LOLC Technologies"
             className="w-[100px]"
           />
-          {/* <img src={eventuplogo} alt="" /> */}
+          {/* <img src={eventuplogo} alt="" width={40} /> */}
         </div>
       </div>
     </div>
