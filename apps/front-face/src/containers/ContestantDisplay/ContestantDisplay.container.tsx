@@ -1,8 +1,5 @@
 import { Contestant } from '@eventup-web/eventup-models';
-import {
-  getAllContestants,
-  subscribeToAllVoteCountUpdates,
-} from '@eventup-web/shared';
+import { subscribeToAllVoteCountUpdates } from '@eventup-web/shared';
 import { Avatar } from '@mui/material';
 import { set } from 'firebase/database';
 import { FunctionComponent, Suspense, useEffect, useState } from 'react';

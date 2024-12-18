@@ -57,9 +57,10 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
         overflowY: 'hidden',
         position: 'relative',
         flexDirection: 'column',
+        backgroundPosition: 'center',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="bg-black relative font-[CinzelDecorative]"
+      className="bg-black transition-all relative font-[CinzelDecorative]"
     >
       {/* <img
         alt="background"
@@ -105,6 +106,7 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
             letterSpacing: 2,
             marginTop: '0px',
           }}
+          className="transition-all"
         >
           <img src={RemovedBGLogo} alt="removed_bg_logo" />
         </div>
@@ -142,7 +144,7 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
               <div className="text-eventPrimary font-bold text-[25px] pb-2">
                 YOUR <br /> SEATING ZONE:
               </div>
-              <div id="content" className="flex flex-row justify-center ">
+              <div id="content" className="flex  flex-row justify-center ">
                 <div className="  p-5 text-[40px] text-eventPrimary font-bold">
                   {participant?.table_no}
                 </div>
