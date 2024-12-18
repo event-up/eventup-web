@@ -17,54 +17,26 @@ const flushString = (str: string) => {
   return res;
 };
 
-const participant = {
-  checkIns: [
-    {
-      checkedInTime: '2024-12-18T18:41:27.846Z',
-      checkpointCode: 'MAIN',
-      isChecked: true,
-    },
-  ],
-  drink_pref: 'Vodka',
-  email: 'seniyas@lolctech.com',
-  employee_name: 'Seniya Dissanayake',
-  first_name: 'Seniya',
-  givenMobileNo: '775444169.0',
-  isCheckedIn: 'N',
-  isWinner: false,
-  last_name: 'Dissanayake',
-  mobileNo: ['94775444169'],
-  qrUrl:
-    'https://storage.googleapis.com/party-qr-kiddies.appspot.com/qrs/DMOJ2SVH.png',
-  ref_id: 'DMOJ2SVH',
-  smsLogs: [
-    {
-      number: '94775444169',
-      smsSent: 'Y',
-    },
-  ],
-  table_no: 'ROYAL_COURT',
-};
 export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
-  const [first, setFirst] = useState<Participant | undefined>(participant);
+  const [participant, setParticipant] = useState<Participant | undefined>();
 
   useEffect(() => {
     // Display based on realtime
-    // const unsub = subscribeToDisplayParticipant((participant) => {
-    //   if (participant) {
-    //     console.log({ participant });
-    //     s.muted = false;
-    //     s.play();
-    //     setFirst({ ...(participant as Participant) });
-    //     setTimeout(() => {
-    //       setFirst(undefined);
-    //     }, 3000);
-    //   }
-    // });
-    // return () => {
-    //   unsub();
-    //   // off(displayPersonRef);
-    // };
+    const unsub = subscribeToDisplayParticipant((participant) => {
+      if (participant) {
+        console.log({ participant });
+        s.muted = false;
+        s.play();
+        setParticipant({ ...(participant as Participant) });
+        setTimeout(() => {
+          setParticipant(undefined);
+        }, 3000);
+      }
+    });
+    return () => {
+      unsub();
+      // off(displayPersonRef);
+    };
   }, []);
 
   const splitFirstName = (name: string) => {
@@ -104,10 +76,10 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
         src={BackgroundImg}
       /> */}
       <audio id="audioPlayer" src={audio}></audio>
-      {first && (
+      {participant && (
         <div className="text-2xl text-white text-center">
           <div className="pb-1">
-            Hi {flushString(splitFirstName(first.first_name))},
+            Hi {flushString(splitFirstName(participant.first_name))},
           </div>
           {participant && <div>WELCOME TO</div>}
         </div>
@@ -143,7 +115,7 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
           LOLCTech Recreation Club Presents
         </div> */}
       </div>
-      {first ? (
+      {participant ? (
         <div
           className="animate__animated animate__tada"
           style={{
@@ -156,10 +128,10 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
         >
           <div className="font-[CinzelDecorative]  text-white text-center">
             <div className="text-[25px]  pb-12 ">
-              {first?.drink_pref !== 'Non Alcoholic' ? (
+              {participant?.drink_pref !== 'Non Alcoholic' ? (
                 <>
                   <div>ENJOY YOUR</div>
-                  <div>{first?.drink_pref}</div>
+                  <div>{participant?.drink_pref}</div>
                 </>
               ) : (
                 <div>ENJOY THE EVENT</div>
@@ -172,7 +144,7 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
               </div>
               <div id="content" className="flex flex-row justify-center ">
                 <div className="  p-5 text-[40px] text-eventPrimary font-bold">
-                  {first?.table_no}
+                  {participant?.table_no}
                 </div>
               </div>
             </div>
