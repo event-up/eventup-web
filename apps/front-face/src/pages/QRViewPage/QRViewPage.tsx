@@ -6,7 +6,7 @@ interface QRViewPageProps {}
 
 const QRViewPage: FunctionComponent<QRViewPageProps> = () => {
   return (
-    <div>
+    <div className="bg-black  ">
       {/* <QRViewContainer /> */}
       <QRViewAuracle />
     </div>

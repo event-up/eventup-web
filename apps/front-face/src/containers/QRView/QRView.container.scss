@@ -43,3 +43,10 @@ button:disabled{
 img:hover {
   outline-offset: calc(var(--g)/-1);
 }
+
+
+.notch-drop-shadow {
+  -webkit-box-shadow: 0px -5px 53px -20px rgba(0,0,0,0.75);
+-moz-box-shadow: 0px -5px 53px -20px rgba(0,0,0,0.75);
+box-shadow: 0px -5px 53px -20px rgba(0,0,0,0.75);
+}

@@ -140,16 +140,17 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
     <div
       style={{
         width: '100%',
-        height: '100%',
-        minHeight: '660px',
+        height: '100vh',
+        // height: 'auto',
+        // minHeight: '500px',
 
         // maxWidth: '690px',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="fixed pt-[50px] font-[CinzelDecorative] flex flex-col  items-center   bg-cover text-white "
+      className=" font-[CinzelDecorative] flex flex-col  items-center  overflow-scroll    bg-cover text-white "
     >
       {isloading && (
-        <div className="absolute w-full h-full bg-[#ffffffd1]  top-0 z-50 flex justify-center items-center">
+        <div className=" overflow-auto absolute w-full h-full bg-[#ffffffd1]  top-0 z-50 flex justify-center items-center">
           <CircularProgress size={70} />
         </div>
       )}
@@ -164,12 +165,12 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
           <img width={70} src={eventuplogo} alt="" />
         </div>
       </div> */}
-
+      <div className="h-[50px]"></div>
       <div
         // style={{ backgroundImage: `url(${coverImg})` }}
-        className="flex-1 flex-col max-w-[590px]   object-top  text-center justify-center "
+        className="flex-1 flex-col max-w-[590px]     object-top  text-center justify-center "
       >
-        <div className="text-2xl">
+        <div className="text-2xl  ">
           <div className="pb-1">Hi {participant?.first_name},</div>
           {isCheckedIn && <div>WELCOME TO</div>}
 
@@ -184,7 +185,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
         {<img height={300} src={eventLogo} alt="Event Logo" className="mb-8" />}
 
         {!isCheckedIn && (
-          <div className="flex justify-center         rounded-lg shadow-lg   ">
+          <div className="flex justify-center rounded-lg shadow-lg pb-10   ">
             <div className="flex justify-center  ">
               <img
                 className="border  border-eventPrimary rounded-3xl "
@@ -198,7 +199,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
 
         {isCheckedIn && (
           <>
-            <div className="pb-4 text-xl">
+            <div className="pb-4 text-xl ">
               {participant?.drink_pref !== 'Non Alcoholic' ? (
                 <>
                   <div>ENJOY YOUR</div>
@@ -223,7 +224,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
         )}
 
         {isCheckedIn && (
-          <div className="pt-9">
+          <div className="pt-9 pb-11">
             <Button
               disabled={!votingStatus}
               className="font-[CinzelDecorative] "
@@ -237,8 +238,9 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
           </div>
         )}
       </div>
-      <div className="flex-auto  flex flex-col justify-end  w-full mt-3   items-center  ">
-        <div className=" bg-white p-4 w-[200px] rounded-t-xl flex justify-center">
+
+      <div className=" fixed  flex-auto  bottom-0  flex flex-col justify-end  w-full mt-3   items-center  ">
+        <div className=" bg-white p-2 w-[200px] notch-drop-shadow rounded-t-xl flex justify-center">
           <img
             src={organizerLogo}
             alt="LOLC Technologies"
