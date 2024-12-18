@@ -21,7 +21,7 @@ export function App() {
         <Snackbar
           open={snackBarState.open}
           anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-          autoHideDuration={1500}
+          autoHideDuration={2500}
           onClose={() => {
             setSnackBarState({ open: false });
           }}

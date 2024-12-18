@@ -122,3 +122,12 @@ export const subscribeToCheckedInStatusInRealtimeDB = (
     cb(snapshot.val());
   });
 };
+
+export const subscribeToTotalCheckInCount = (
+  cb: (checkedIn: number) => void
+) => {
+  const participantRef = ref(db, 'checkInCount');
+  return onValue(participantRef, (snapshot) => {
+    cb(snapshot.val());
+  });
+};

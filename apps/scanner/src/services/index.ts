@@ -22,7 +22,7 @@ export const handleParticipantCheckIn = async (
 
   if (checkCheckPoints(checkPointCode, participant)) {
     console.log('Already Checked In!');
-    throw new Error(`Already Checked In! to ${checkPointCode}`);
+    throw new Error(`Already Checked in!`);
     // alert(`Already Checked In! to ${checkPointCode}`);
     // setQRText(undefined);
   }

@@ -1,3 +1,4 @@
+import { FunctionComponent } from 'react';
 import { CheckInDisplayContainer } from '../../containers/CheckInDisplay/CheckInDisplay.container';
 
 interface CheckInDisplayPageProps {}

@@ -16,67 +16,10 @@ import { InfoRounded } from '@mui/icons-material';
 
 interface QRViewPageProps {}
 
-const eventTable = [
-  {
-    title: 'Location',
-    value: 'Lotus Tower, Lake Side',
-  },
-  {
-    title: 'Time',
-    value: '7.00 pm - 3.30am',
-  },
-  {
-    title: 'Date',
-    value: '13th October ',
-  },
-];
-
-const participant2 = {
-  votes: [
-    {
-      contestantId: '2',
-      timestamp: '2024-12-18T14:18:32.918Z',
-    },
-    {
-      contestantId: '1',
-      timestamp: '2024-12-18T14:18:45.912Z',
-    },
-    {
-      timestamp: '2024-12-18T14:19:41.041Z',
-      contestantId: '3',
-    },
-  ],
-  email: 'seniyas@lolctech.com',
-  checkIns: [
-    {
-      checkpointCode: 'MAIN',
-      checkedInTime: '2024-12-18T13:30:28.876Z',
-      isChecked: true,
-    },
-  ],
-  isCheckedIn: 'N',
-  mobileNo: ['94775444169'],
-  first_name: 'Seniya',
-  smsLogs: [
-    {
-      smsSent: 'Y',
-      number: '94775444169',
-    },
-  ],
-  ref_id: 'VK24NWZM',
-  table_no: '10.0',
-  qrUrl:
-    'https://storage.googleapis.com/party-qr-kiddies.appspot.com/qrs/VK24NWZM.png',
-  last_name: 'Dissanayake',
-  isWinner: false,
-  drink_pref: 'Vodka',
-  givenMobileNo: '775444169.0',
-  employee_name: 'Seniya Dissanayake',
-};
 export const QRViewAuracle: FC<QRViewPageProps> = () => {
   const { search } = useLocation();
   const { showMessage } = useRootContext();
-  const [participant, setParticipant] = useState<Participant>(participant2);
+  const [participant, setParticipant] = useState<Participant>();
   const query = new URLSearchParams(search);
   const refId = query.get('refid');
   const [isloading, setisloading] = useState(true);
@@ -89,21 +32,21 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
   useEffect(() => {
     if (!refId) return;
     setisloading(false);
-    // setisloading(true);
-    // searchParticipantByRefId(refId?.toString())
-    //   .then((participant) => {
-    //     setParticipant(participant);
-    //     console.log({ participant });
+    setisloading(true);
+    searchParticipantByRefId(refId?.toString())
+      .then((participant) => {
+        setParticipant(participant);
+        console.log({ participant });
 
-    //     setTimeout(() => {
-    //       setisloading(false);
-    //     }, 1000);
-    //   })
-    //   .catch((e) => {
-    //     console.log({ e });
+        setTimeout(() => {
+          setisloading(false);
+        }, 1000);
+      })
+      .catch((e) => {
+        console.log({ e });
 
-    //     showMessage('ERROR', e.message);
-    //   });
+        showMessage('ERROR', e.message);
+      });
   }, [refId]);
 
   /**
