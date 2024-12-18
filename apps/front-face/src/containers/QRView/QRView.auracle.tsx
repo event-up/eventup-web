@@ -140,12 +140,13 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
     <div
       style={{
         width: '100%',
-        height: '100vh',
+        height: '100%',
         minHeight: '660px',
+
         // maxWidth: '690px',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="pt-[50px] font-[CinzelDecorative] flex flex-col  items-center   bg-cover text-white "
+      className="fixed pt-[50px] font-[CinzelDecorative] flex flex-col  items-center   bg-cover text-white "
     >
       {isloading && (
         <div className="absolute w-full h-full bg-[#ffffffd1]  top-0 z-50 flex justify-center items-center">
@@ -236,7 +237,7 @@ export const QRViewAuracle: FC<QRViewPageProps> = () => {
           </div>
         )}
       </div>
-      <div className="flex-auto flex flex-col justify-end  w-full mt-3   items-center  ">
+      <div className="flex-auto  flex flex-col justify-end  w-full mt-3   items-center  ">
         <div className=" bg-white p-4 w-[200px] rounded-t-xl flex justify-center">
           <img
             src={organizerLogo}
