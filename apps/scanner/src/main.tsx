@@ -4,13 +4,14 @@ import App from './app/app';
 import './styles.css';
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material';
-
+import CssBaseline from '@mui/material/CssBaseline';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
       main: '#0494b4',
       // light: "#0494b4",
@@ -23,6 +24,7 @@ const theme = createTheme({
 root.render(
   <StrictMode>
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <App />
     </ThemeProvider>
   </StrictMode>

@@ -69,6 +69,8 @@ export function VotingRegistrationListView() {
         const queens = data.filter(
           (contestant) => contestant.category === 'QUEEN'
         );
+
+        queens.sort((a, b) => b.voteCount - a.voteCount);
         setQueens(queens);
       })
       .catch((error) => {
