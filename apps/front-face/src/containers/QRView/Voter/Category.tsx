@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { FunctionComponent, useState } from 'react';
 import { ContestantState } from './Vote.container';
-import { Done, PlusOne } from '@mui/icons-material';
+import { ArrowUpward, Done, PlusOne, Upcoming } from '@mui/icons-material';
 import grey from '@mui/material/colors/grey';
 import { ContestantCard } from './VoteContestantCard';
 
@@ -22,7 +22,7 @@ export const ContestantCategoryContainer: FunctionComponent<
   ContestantCategoryContainerProps
 > = ({ contestants, onVote }) => {
   return (
-    <div className="flex flex-wrap justify-evenly  overflow-x-auto">
+    <div className="flex flex-wrap justify-evenly   overflow-x-auto">
       {contestants.map((contestant) => (
         <VoteCard key={contestant.id} contestant={contestant} onVote={onVote} />
       ))}
@@ -73,13 +73,13 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
       > */}
       <ContestantCard onClick={toggleDrawer(true)}>
         <Avatar
-          sx={{ width: 100, height: 100 }}
+          sx={{ width: 70, height: 70 }}
           className="w-full"
           src={contestant.photoUrl}
           alt={contestant.name}
         />
-        <div className="pt-1 text-2xl text-eventPrimary">#{contestant.id}</div>
-        <div className="font-bold text-xl pb-2">{contestant.name}</div>
+        <div className="pt-1 text-xl  text-eventPrimary">#{contestant.id}</div>
+        <div className="font-bold text-[15px]  pb-2 ">{contestant.name}</div>
       </ContestantCard>
       {/* </div> */}
       <SwipeableDrawer
@@ -93,17 +93,21 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
         }}
       >
         <Puller />
-        <div className="p-4 bg-black min-h-[500px]">
+        <div className=" flex flex-col justify-center font-[CinzelDecorative] p-4 bg-[#212121] min-h-[00px]">
           {/* Drawer Content */}
-          <div className="flex flex-col items-center  mb-4">
+          <div className="flex flex-col items-center  mb-4 pt-8">
             <Avatar
               sx={{ width: 150, height: 150 }}
               src={contestant.photoUrl}
               alt={contestant.name}
             />
             <div>
-              <div className="text-xl font-bold">{contestant.name}</div>
-              <div className="text-gray-500">#{contestant.id}</div>
+              <div className="text-xl text-eventPrimary font-bold">
+                {contestant.name}
+              </div>
+              <div className="font-sans text-[#FAFAFA] text-3xl text-center">
+                #{contestant.id}
+              </div>
             </div>
           </div>
           <Button
@@ -114,24 +118,25 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
                 setloading(false);
               });
             }}
-            startIcon={contestant.voted ? <Done /> : <PlusOne />}
+            startIcon={contestant.voted ? <Done /> : <ArrowUpward />}
+            className="text-"
             sx={{
-              backgroundColor: 'rgb(255, 237, 213)',
-              color: 'rgb(234, 88, 12)',
-              borderRadius: '24px 24px 24px 24px',
-              padding: '24px',
+              borderRadius: '24px',
+              padding: '20px',
+              fontSize: '15px',
               margin: '10px',
-              textTransform: 'none',
-              '&:hover': {
-                backgroundColor: 'rgb(255, 247, 237)',
-              },
+              fontWeight: 'bold',
+              fontFamily: 'CinzelDecorative',
+              // textTransform: 'none',
+              backgroundColor: '#dbad45',
+              color: 'black',
+
               '&:disabled': {
-                backgroundColor: 'rgb(255, 237, 213, 0.5)',
-                color: 'rgb(234, 88, 12, 0.5)',
+                backgroundColor: '#BDBDBD',
               },
             }}
           >
-            {contestant.voted ? 'Voted' : 'Vote'}
+            {contestant.voted ? 'Voted' : 'Vote for ' + contestant.name}
           </Button>
           {loading && (
             <div className="w-full">

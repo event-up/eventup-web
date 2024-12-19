@@ -10,14 +10,14 @@ export const ContestantCard: React.FC<ContestantCardProps> = ({
   onClick,
 }) => {
   return (
-    <div className=" hover:scale-90 scale-100  m-2 transition-all relative drop-shadow-xl w-48 h-64 overflow-hidden rounded-xl bg-[#3d3c3d]">
+    <div className=" hover:scale-75 scale-100 transition-all m-1 ">
       <div
-        className="absolute flex flex-col items-center justify-center text-white z-[1] opacity-90 rounded-xl inset-0.5 bg-[#39270e]"
+        className=" flex  p-3 w-[150px] overflow-hidden  h-[150px] flex-col items-center justify-center text-white z-[1] opacity-90 rounded-xl inset-0.5 bg-[#39270e]"
         onClick={onClick}
       >
         {children}
       </div>
-      <div className="glow glow-effect" />
+      {/* <div className="glow glow-effect" /> */}
     </div>
   );
 };

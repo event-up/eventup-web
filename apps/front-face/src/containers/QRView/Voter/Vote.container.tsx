@@ -158,7 +158,7 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
         // maxWidth: '690px',
         backgroundImage: `url(${coverImg})`,
       }}
-      className="pt-2 font-[CinzelDecorative] flex flex-col justify-between items-center   bg-cover text-white "
+      className="pt-2 font-[CinzelDecorative] flex flex-col justify-start items-center   bg-cover text-white "
     >
       <img
         height={200}
@@ -167,7 +167,7 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
         className="mb-8 px-8"
       />
 
-      <div className="text-center bg-black bg-opacity-50 p-2 rounded-lg">
+      <div className=" text-sm text-center bg-black bg-opacity-50 p-2 rounded-lg">
         <div>
           <InfoRounded /> You can vote up to 3 contestants.
         </div>
@@ -175,7 +175,6 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
           <InfoRounded /> Casted votes can not be undone
         </div>
       </div>
-      <div className="h-[100px]"></div>
       {Object.keys(contestants || {}).map((category) => (
         <ContestantCategoryContainer
           contestants={contestants[category]}
