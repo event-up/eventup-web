@@ -2,6 +2,7 @@ import { Contestant, Participant } from '@eventup-web/eventup-models';
 import {
   getAllContestants,
   searchParticipantByRefId,
+  subscribeToVotingStatus,
   voteContestant,
 } from '@eventup-web/shared';
 import { FunctionComponent, useEffect, useState } from 'react';
@@ -11,6 +12,7 @@ import { useRootContext } from '../../../app/RootContext';
 import coverImg from '../../../assets/background_auracle.jpg';
 import eventLogo from '../../../assets/event_logo.png';
 import { InfoRounded } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface
 interface VoteContainerProps {}
@@ -22,6 +24,7 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
   }>([]);
   const [participant, setParticipant] = useState<Participant | null>(null);
   const { search } = useLocation();
+  const [isLoading, setisLoading] = useState(true);
   const query = new URLSearchParams(search);
   const { showMessage } = useRootContext();
   const [reFetechData, setreFetechData] = useState(0);
@@ -38,6 +41,7 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
   console.log({ contestants });
 
   useEffect(() => {
+    setisLoading(true);
     const loadParticipant = async () => {
       if (participantRefId === null) throw new Error('Invalid Participant Id');
 
@@ -53,25 +57,36 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
 
   useEffect(() => {
     const loadContestants = async () => {
-      if (participant === null) return;
-      if (participantRefId === null) throw new Error('Invalid Participant Id');
+      try {
+        if (participant === null) return;
+        if (participantRefId === null)
+          throw new Error('Invalid Participant Id');
 
-      const contestants = await getAllContestants();
-      const contestantsMap = new Map<string, ContestantState[]>();
+        const contestants = await getAllContestants();
+        const contestantsMap = new Map<string, ContestantState[]>();
 
-      contestants
-        .map((c) => {
-          return { ...c, voted: isVoted(c, participant) };
-        })
-        .forEach((contestant) => {
-          if (contestantsMap.has(contestant.category)) {
-            contestantsMap.get(contestant.category)?.push(contestant);
-          } else {
-            contestantsMap.set(contestant.category, [contestant]);
-          }
-        });
+        contestants
+          .map((c) => {
+            return { ...c, voted: isVoted(c, participant) };
+          })
+          .forEach((contestant) => {
+            if (contestantsMap.has(contestant.category)) {
+              contestantsMap.get(contestant.category)?.push(contestant);
+            } else {
+              contestantsMap.set(contestant.category, [contestant]);
+            }
+          });
 
-      setContestants(Object.fromEntries(contestantsMap));
+        setContestants(Object.fromEntries(contestantsMap));
+
+        setTimeout(() => {
+          setisLoading(false);
+        }, 800);
+      } catch (e) {
+        setisLoading(false);
+
+        showMessage('ERROR', e.message);
+      }
     };
 
     loadContestants().catch((e) => {
@@ -105,6 +120,11 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
       }}
       className="pt-2 font-[CinzelDecorative] flex flex-col justify-start items-center   bg-cover text-white "
     >
+      {isLoading && (
+        <div className=" overflow-auto absolute w-full h-full bg-[#ffffffd1]  top-0 z-50 flex justify-center items-center">
+          <CircularProgress size={70} />
+        </div>
+      )}
       <img
         height={200}
         src={eventLogo}
