@@ -30,7 +30,7 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
         setParticipant({ ...(participant as Participant) });
         setTimeout(() => {
           setParticipant(undefined);
-        }, 3000);
+        }, 6000);
       }
     });
     return () => {
