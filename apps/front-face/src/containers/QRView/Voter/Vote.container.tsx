@@ -92,47 +92,47 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
   };
   console.log({ contestants });
 
-  // useEffect(() => {
-  //   const loadParticipant = async () => {
-  //     if (participantRefId === null) throw new Error('Invalid Participant Id');
+  useEffect(() => {
+    const loadParticipant = async () => {
+      if (participantRefId === null) throw new Error('Invalid Participant Id');
 
-  //     const participant = await searchParticipantByRefId(participantRefId);
-  //     setParticipant(participant);
-  //   };
+      const participant = await searchParticipantByRefId(participantRefId);
+      setParticipant(participant);
+    };
 
-  //   loadParticipant().catch((e) => {
-  //     showMessage('ERROR', e.message);
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [participantRefId, reFetechData]);
+    loadParticipant().catch((e) => {
+      showMessage('ERROR', e.message);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [participantRefId, reFetechData]);
 
-  // useEffect(() => {
-  //   const loadContestants = async () => {
-  //     if (participant === null) return;
-  //     if (participantRefId === null) throw new Error('Invalid Participant Id');
+  useEffect(() => {
+    const loadContestants = async () => {
+      if (participant === null) return;
+      if (participantRefId === null) throw new Error('Invalid Participant Id');
 
-  //     const contestants = await getAllContestants();
-  //     const contestantsMap = new Map<string, ContestantState[]>();
+      const contestants = await getAllContestants();
+      const contestantsMap = new Map<string, ContestantState[]>();
 
-  //     contestants
-  //       .map((c) => {
-  //         return { ...c, voted: isVoted(c, participant) };
-  //       })
-  //       .forEach((contestant) => {
-  //         if (contestantsMap.has(contestant.category)) {
-  //           contestantsMap.get(contestant.category)?.push(contestant);
-  //         } else {
-  //           contestantsMap.set(contestant.category, [contestant]);
-  //         }
-  //       });
+      contestants
+        .map((c) => {
+          return { ...c, voted: isVoted(c, participant) };
+        })
+        .forEach((contestant) => {
+          if (contestantsMap.has(contestant.category)) {
+            contestantsMap.get(contestant.category)?.push(contestant);
+          } else {
+            contestantsMap.set(contestant.category, [contestant]);
+          }
+        });
 
-  //     setContestants(Object.fromEntries(contestantsMap));
-  //   };
+      setContestants(Object.fromEntries(contestantsMap));
+    };
 
-  //   loadContestants().catch((e) => {
-  //     showMessage('ERROR', e.message);
-  //   });
-  // }, [participant]);
+    loadContestants().catch((e) => {
+      showMessage('ERROR', e.message);
+    });
+  }, [participant]);
 
   const handleOnVote = async (contestant: Contestant) => {
     try {
@@ -167,20 +167,37 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
         className="mb-8 px-8"
       />
 
-      <div className=" text-sm text-center bg-black bg-opacity-50 p-2 rounded-lg">
+      <div className=" flex flex-col justify-start text-sm text-center bg-black bg-opacity-50 p-2 rounded-lg">
         <div>
           <InfoRounded /> You can vote up to 3 contestants.
         </div>
-        <div>
+        <div className="text-left">
           <InfoRounded /> Casted votes can not be undone
         </div>
       </div>
-      {Object.keys(contestants || {}).map((category) => (
-        <ContestantCategoryContainer
-          contestants={contestants[category]}
-          onVote={handleOnVote}
-        />
-      ))}
+
+      {participant &&
+        contestants &&
+        Object.keys(contestants || {}).map((category) => (
+          <ContestantCategoryContainer
+            participant={participant}
+            contestants={contestants[category]}
+            onVote={handleOnVote}
+          />
+        ))}
+
+      <footer>
+        <a
+          href="https://eventup-lk.web.app/"
+          target="_blank"
+          className="text-[5px]"
+          rel="noreferrer"
+        >
+          <div className="text-[5px]">
+            All rights reserved &copy; {new Date().getFullYear()} Eventup.lk
+          </div>
+        </a>
+      </footer>
     </div>
   );
 };

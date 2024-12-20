@@ -1,4 +1,4 @@
-import { Contestant } from '@eventup-web/eventup-models';
+import { Contestant, Participant } from '@eventup-web/eventup-models';
 import {
   Avatar,
   Button,
@@ -8,23 +8,29 @@ import {
 } from '@mui/material';
 import { FunctionComponent, useState } from 'react';
 import { ContestantState } from './Vote.container';
-import { ArrowUpward, Done, PlusOne, Upcoming } from '@mui/icons-material';
+import { ArrowUpward, Done, DoneTwoTone } from '@mui/icons-material';
 import grey from '@mui/material/colors/grey';
 import { ContestantCard } from './VoteContestantCard';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface
 interface ContestantCategoryContainerProps {
   contestants: ContestantState[];
+  participant: Participant;
   onVote: (contestant: Contestant) => Promise<void>;
 }
 
 export const ContestantCategoryContainer: FunctionComponent<
   ContestantCategoryContainerProps
-> = ({ contestants, onVote }) => {
+> = ({ contestants, onVote, participant }) => {
   return (
     <div className="flex flex-wrap justify-evenly   overflow-x-auto">
       {contestants.map((contestant) => (
-        <VoteCard key={contestant.id} contestant={contestant} onVote={onVote} />
+        <VoteCard
+          participant={participant}
+          key={contestant.id}
+          contestant={contestant}
+          onVote={onVote}
+        />
       ))}
     </div>
   );
@@ -32,10 +38,15 @@ export const ContestantCategoryContainer: FunctionComponent<
 
 interface VoteCardProps {
   contestant: ContestantState;
+  participant: Participant;
   onVote: (contestant: Contestant) => Promise<void>;
 }
 
-const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
+const VoteCard: FunctionComponent<VoteCardProps> = ({
+  contestant,
+  participant,
+  onVote,
+}) => {
   const [loading, setloading] = useState(false);
   // Add state for drawer
   const [drawerState, setDrawerState] = useState<{
@@ -71,7 +82,9 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
                     transition-all duration-300 ease-in-out"
         onClick={toggleDrawer(true)} // Add click handler to open drawer
       > */}
-      <ContestantCard onClick={toggleDrawer(true)}>
+      <ContestantCard
+        onClick={contestant.voted ? undefined : toggleDrawer(true)}
+      >
         <Avatar
           sx={{ width: 70, height: 70 }}
           className="w-full"
@@ -80,6 +93,16 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
         />
         <div className="pt-1 text-xl  text-eventPrimary">#{contestant.id}</div>
         <div className="font-bold text-[15px]  pb-2 ">{contestant.name}</div>
+        {
+          // Add icon to show if contestant has been voted for
+          contestant.voted && (
+            <div className=" px-2 rounded-full bg-[#4CAF50] text-xs font-sans">
+              <DoneTwoTone fontSize={'small'} className="text-white pr-2 " />
+              Voted
+            </div>
+          )
+        }
+        <div></div>
       </ContestantCard>
       {/* </div> */}
       <SwipeableDrawer
@@ -97,7 +120,7 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
           {/* Drawer Content */}
           <div className="flex flex-col items-center  mb-4 pt-8">
             <Avatar
-              sx={{ width: 150, height: 150 }}
+              sx={{ width: 200, height: 200 }}
               src={contestant.photoUrl}
               alt={contestant.name}
             />
@@ -116,6 +139,7 @@ const VoteCard: FunctionComponent<VoteCardProps> = ({ contestant, onVote }) => {
               setloading(true);
               onVote(contestant).finally(() => {
                 setloading(false);
+                toggleDrawer(false);
               });
             }}
             startIcon={contestant.voted ? <Done /> : <ArrowUpward />}
