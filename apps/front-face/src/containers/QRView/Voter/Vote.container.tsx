@@ -1,7 +1,6 @@
 import { Contestant, Participant } from '@eventup-web/eventup-models';
 import {
   getAllContestants,
-  incrementContestantVote,
   searchParticipantByRefId,
   voteContestant,
 } from '@eventup-web/shared';
@@ -11,70 +10,16 @@ import { useLocation } from 'react-router-dom';
 import { useRootContext } from '../../../app/RootContext';
 import coverImg from '../../../assets/background_auracle.jpg';
 import eventLogo from '../../../assets/event_logo.png';
-import { Info, InfoRounded } from '@mui/icons-material';
+import { InfoRounded } from '@mui/icons-material';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface
 interface VoteContainerProps {}
-const initContestants: { [key: string]: ContestantState[] } = {
-  QUEEN: [
-    {
-      photoUrl:
-        'https://firebasestorage.googleapis.com/v0/b/party-qr-kiddies.appspot.com/o/contestants%2Fimages%2F1?alt=media&token=95c96a20-c6b0-42d3-859b-19b7d00f8a3a',
-      voteCount: 0,
-      name: 'Sahan',
-      votes: 5,
-      category: 'QUEEN',
-      id: '1',
-      voted: true,
-    },
-    {
-      name: 'Seniya',
-      id: '2',
-      photoUrl:
-        'https://firebasestorage.googleapis.com/v0/b/party-qr-kiddies.appspot.com/o/contestants%2Fimages%2F2?alt=media&token=d6121d15-d325-43b1-bb35-989a39a6653e',
-      category: 'QUEEN',
-      votes: 4,
-      voteCount: 0,
-      voted: true,
-    },
-    {
-      id: '3',
-      photoUrl:
-        'https://firebasestorage.googleapis.com/v0/b/party-qr-kiddies.appspot.com/o/contestants%2Fimages%2F3?alt=media&token=7968d9e8-f575-4004-af41-4dec234a5b01',
-      votes: 4,
-      category: 'QUEEN',
-      voteCount: 0,
-      name: 'UI TEAM',
-      voted: true,
-    },
-    {
-      id: '4',
-      name: 'TEST3',
-      voteCount: 0,
-      photoUrl:
-        'https://firebasestorage.googleapis.com/v0/b/party-qr-kiddies.appspot.com/o/contestants%2Fimages%2F4?alt=media&token=11bb12ca-1650-4798-be2f-1d323562ae36',
-      category: 'QUEEN',
-      votes: 1,
-      voted: false,
-    },
-    {
-      id: '5',
-      name: 'overflow 3',
-      voteCount: 0,
-      photoUrl:
-        'https://firebasestorage.googleapis.com/v0/b/party-qr-kiddies.appspot.com/o/contestants%2Fimages%2F4?alt=media&token=11bb12ca-1650-4798-be2f-1d323562ae36',
-      category: 'QUEEN',
-      votes: 1,
-      voted: false,
-    },
-  ],
-};
 
 export type ContestantState = Contestant & { voted: boolean };
 const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
   const [contestants, setContestants] = useState<{
     [key: string]: ContestantState[];
-  }>(initContestants);
+  }>([]);
   const [participant, setParticipant] = useState<Participant | null>(null);
   const { search } = useLocation();
   const query = new URLSearchParams(search);
@@ -186,11 +131,11 @@ const VoteContainer: FunctionComponent<VoteContainerProps> = () => {
           />
         ))}
 
-      <footer>
+      <footer className="fixed bottom-0">
         <a
           href="https://eventup-lk.web.app/"
           target="_blank"
-          className="text-[5px]"
+          className="text-[8px]"
           rel="noreferrer"
         >
           <div className="text-[5px]">
