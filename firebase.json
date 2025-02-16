@@ -2,7 +2,7 @@
   "hosting": [
     {
       "public": "dist/apps/scanner",
-      "site": "eventup-auracle-admin",
+      "site": "eventup-fictionevents-admin",
       "ignore": [
         "firebase.json",
         "**/.*",
@@ -17,7 +17,7 @@
     },
     {
       "public": "dist/apps/front-face",
-      "site": "eventup-auracle",
+      "site": "fiction-events",
       "ignore": [
         "firebase.json",
         "**/.*",

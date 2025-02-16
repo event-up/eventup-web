@@ -48,6 +48,11 @@ export interface DecodeResponse {
   };
 }
 
+
+export interface QRViewLayoutDefinition{
+    
+}
+
 export interface SystemConfig {
   values: { code: string; name: string }[];
 }

@@ -4,6 +4,12 @@
     url('./assets/fonts/CinzelDecorative-Regular.ttf');
   font-weight: normal;
 }
+
+@font-face {
+  font-family: 'Eulogy';
+  src: local('Eulogy'), url('./assets/fonts/eulogy-demo.semi-bold.ttf');
+  font-weight: 600;
+}
 /* 
 @font-face {
   font-family: 'CinzelDecorative';

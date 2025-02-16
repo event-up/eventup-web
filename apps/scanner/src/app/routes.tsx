@@ -1,8 +1,9 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import ScannerPage from '../pages/CheckerPage/CheckerPage';
-import ContestsPage from '../pages/Contests/ContestsPage';
+// import ContestsPage from '../pages/Contests/ContestsPage';
 import { Button, Tab, Tabs } from '@mui/material';
+import ContestsPage from '../pages/Contests/ContestsPage';
 
 export const RootRoutes: FunctionComponent = () => {
   const nav = useNavigate();
@@ -23,7 +24,7 @@ export const RootRoutes: FunctionComponent = () => {
           }}
         >
           <Tab value={'checker/scanner'} label="Checker" />
-          <Tab value={'event/contestants'} label="Event Management" />
+          <Tab value={'event/manage'} label="Event Management" />
         </Tabs>
       </div>
       <Routes>
