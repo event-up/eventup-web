@@ -1,0 +1,9 @@
+{
+  "name": "event",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/event",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project event --web",
+  "targets": {}
+}

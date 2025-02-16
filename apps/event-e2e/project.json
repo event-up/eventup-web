@@ -1,0 +1,10 @@
+{
+  "name": "event-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/event-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["event"],
+  "// targets": "to see all targets run: nx show project event-e2e --web",
+  "targets": {}
+}

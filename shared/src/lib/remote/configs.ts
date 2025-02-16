@@ -1,3 +1,4 @@
+'use client';
 import { getMessaging } from 'firebase/messaging';
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
@@ -17,7 +18,7 @@ const firebaseConfig = {
 };
 
 export const app = initializeApp(firebaseConfig);
-localStorage.setItem('isInitialRaffleScreen', String(true));
+
 const db = getDatabase(app);
 const fs = getFirestore(app);
 const messaging = getMessaging(app);
