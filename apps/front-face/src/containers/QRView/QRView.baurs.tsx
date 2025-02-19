@@ -144,7 +144,9 @@ export const QRViewBaurs: FC<QRViewBaursProps> = () => {
             </div>
 
             <div className="text-2xl px-4 pt-5 pb-5">
-              Get ready for an unforgettable night!
+              <div>GET READY FOR AN</div>
+
+              <div className="">UNFORGETTABLE NIGHT!</div>
             </div>
           </div>
         )}
