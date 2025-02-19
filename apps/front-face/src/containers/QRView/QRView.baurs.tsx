@@ -169,7 +169,7 @@ export const QRViewBaurs: FC<QRViewBaursProps> = () => {
       </div>
 
       <div className=" shadow-2xl fixed  flex-auto  bottom-0  flex flex-col justify-end  w-full mt-3   items-center  ">
-        <div className=" bg-white p-2 w-[200px] notch-drop-shadow rounded-t-xl flex justify-center">
+        <div className=" bg-[#03043c] p-2 w-[200px] notch-drop-shadow rounded-t-xl flex justify-center">
           <img
             src={organizerLogo}
             alt="fiction events logo"
