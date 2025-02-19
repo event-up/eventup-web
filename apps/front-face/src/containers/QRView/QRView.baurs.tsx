@@ -133,7 +133,7 @@ export const QRViewBaurs: FC<QRViewBaursProps> = () => {
         {<img height={300} src={eventLogo} alt="Event Logo" className="mb-8" />}
 
         {!isCheckedIn && (
-          <div className="flex justify-center rounded-lg shadow-lg pb-10   ">
+          <div className="flex flex-col justify-center rounded-lg shadow-lg pb-10   ">
             <div className="flex justify-center  ">
               <img
                 className="border  border-eventPrimary rounded-3xl "
@@ -141,6 +141,10 @@ export const QRViewBaurs: FC<QRViewBaursProps> = () => {
                 src={participant?.qrUrl}
                 alt="qr"
               />
+            </div>
+
+            <div className="text-xl px-4 pt-5">
+              Get ready for an unforgettable night!
             </div>
           </div>
         )}
