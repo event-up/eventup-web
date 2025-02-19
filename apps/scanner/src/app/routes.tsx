@@ -1,8 +1,9 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import ScannerPage from '../pages/CheckerPage/CheckerPage';
+import LoginPage from '../pages/LoginPage/LoginPage';
 // import ContestsPage from '../pages/Contests/ContestsPage';
-import { Button, Tab, Tabs } from '@mui/material';
+import { Tab, Tabs } from '@mui/material';
 import ContestsPage from '../pages/Contests/ContestsPage';
 
 export const RootRoutes: FunctionComponent = () => {

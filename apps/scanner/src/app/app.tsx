@@ -1,4 +1,4 @@
-import { BrowserRouter, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { RootRoutes } from './routes';
 import { Snackbar, Alert, Button } from '@mui/material';
 import { useState } from 'react';
@@ -50,7 +50,11 @@ export function App() {
             },
           }}
         >
+          <Routes>
+        <Route path="/login" element={<ScannerPage />}></Route>
+
           <RootRoutes />
+          </Routes>
         </RootContext.Provider>
       </>
     </BrowserRouter>

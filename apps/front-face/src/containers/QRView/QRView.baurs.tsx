@@ -92,11 +92,10 @@ export const QRViewBaurs: FC<QRViewBaursProps> = () => {
         // minHeight: '500px',
 
         // maxWidth: '690px',
-        letterSpacing: '0.1rem',
         backgroundPosition: 'center',
         backgroundImage: `url(${coverImg})`,
       }}
-      className=" font-[Eulogy] font-semibold flex flex-col items-center overflow-scroll bg-cover text-white "
+      className="  font-semibold flex flex-col items-center overflow-scroll bg-cover text-white "
     >
       {isloading && (
         <div className=" overflow-auto absolute w-full h-full bg-[#ffffffd1]  top-0 z-50 flex justify-center items-center">
@@ -126,7 +125,7 @@ export const QRViewBaurs: FC<QRViewBaursProps> = () => {
           {!isCheckedIn && (
             <>
               <div>WE ARE THRILLED</div>
-              <div className="pb-2">TO WELCOME YOU AT</div>
+              <div className="pb-2">TO WELCOME YOU TO</div>
             </>
           )}
         </div>
