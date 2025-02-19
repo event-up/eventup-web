@@ -209,7 +209,7 @@ export function ScannerContainer({
             </div>
             <div style={{ fontSize: 30 }}>Welcome! </div>
             <div style={{ fontSize: 40 }}>
-              {scannedPerson?.first_name + ' ' + scannedPerson?.last_name}
+              {scannedPerson?.employee_name}
             </div>
             <ul style={{ fontSize: 30 }}></ul>
             <IconButton

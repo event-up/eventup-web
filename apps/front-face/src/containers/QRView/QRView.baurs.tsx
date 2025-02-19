@@ -119,7 +119,7 @@ export const QRViewBaurs: FC<QRViewBaursProps> = () => {
         className="flex-1 flex-col max-w-[590px]     object-top  text-center justify-center "
       >
         <div className="text-2xl  ">
-          <div className="pb-1">Hi {participant?.first_name},</div>
+          <div className="pb-1">Hi {participant?.employee_name},</div>
           {isCheckedIn && <div>WELCOME TO</div>}
 
           {!isCheckedIn && (
@@ -164,9 +164,7 @@ export const QRViewBaurs: FC<QRViewBaursProps> = () => {
         )}
 
         {isCheckedIn && (
-          <div className="pb-4 text-xl font-[Eulogy] ">
-            {<div>ENJOY THE EVENT</div>}
-          </div>
+          <div className="pb-4 text-xl">{<div>ENJOY THE EVENT</div>}</div>
         )}
       </div>
 

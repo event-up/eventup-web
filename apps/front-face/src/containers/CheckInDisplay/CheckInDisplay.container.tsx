@@ -80,7 +80,7 @@ export const CheckInDisplayContainer: FC<DisplayPageProps> = () => {
       {participant && (
         <div className="text-2xl text-white text-center">
           <div className="pb-1">
-            Hi {flushString(splitFirstName(participant.first_name))},
+            Hi {flushString(splitFirstName(participant.employee_name))},
           </div>
           {participant && <div>WELCOME TO</div>}
         </div>

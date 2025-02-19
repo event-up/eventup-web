@@ -2,6 +2,11 @@ export interface Participant {
   spouse: boolean;
   children: any;
   employee_name: string;
+  // mobile_no: int = -1
+  // email: int = -1
+  // employee_name: int = -1
+  // employee_no:int = -1
+  mobile_no: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -48,10 +53,7 @@ export interface DecodeResponse {
   };
 }
 
-
-export interface QRViewLayoutDefinition{
-    
-}
+export interface QRViewLayoutDefinition {}
 
 export interface SystemConfig {
   values: { code: string; name: string }[];
