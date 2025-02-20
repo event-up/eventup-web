@@ -50,11 +50,7 @@ export function App() {
             },
           }}
         >
-          <Routes>
-        <Route path="/login" element={<ScannerPage />}></Route>
-
           <RootRoutes />
-          </Routes>
         </RootContext.Provider>
       </>
     </BrowserRouter>
